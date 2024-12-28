@@ -1,9 +1,13 @@
 <template>
     <article class="item-card">
+        <!-- Product image: Occupies the whole width of the card and the upper part -->
         <img :src="props.imageSrc" alt="Product image" class="image" />
         <div class="p-2">
+            <!-- Product description and price -->
             <h2 class="description">{{ props.description }}</h2>
             <p class="price">{{ currencyAcr }}{{ props.price.toFixed(2) }}</p>
+
+            <!-- Quantity and quantity management buttons -->
             <div class="quantity-container">
                 <button
                     :disabled="disableDecrease"
@@ -21,6 +25,8 @@
                     <object v-html="plusIco" />
                 </button>
             </div>
+
+            <!-- Add to cart button: Disabled if quantity is 0 -->
             <div class="mt-2">
                 <button
                     :disabled="disableAddToCart"
@@ -42,9 +48,6 @@ import plusIco from "@/assets/plus.svg?raw";
 import addToCartIco from "@/assets/addToCart.svg?raw";
 
 const quantity = ref(0);
-const minQuantity = 0;
-const maxQuantity = 10;
-const currencyAcr = "$";
 
 const props = defineProps({
     id: {
@@ -67,20 +70,32 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    minQuantity: {
+        type: Number,
+        default: 0,
+    },
+    maxQuantity: {
+        type: Number,
+        default: 10,
+    },
+    currencyAcr: {
+        type: String,
+        default: "$",
+    },
 });
 
-const disableDecrease = computed(() => quantity.value === minQuantity);
-const disableIncrease = computed(() => quantity.value === maxQuantity);
-const disableAddToCart = computed(() => quantity.value === minQuantity);
+const disableDecrease = computed(() => quantity.value === props.minQuantity);
+const disableIncrease = computed(() => quantity.value === props.maxQuantity);
+const disableAddToCart = computed(() => quantity.value === props.minQuantity);
 
 const increaseQuantity = () => {
-    if (quantity.value < maxQuantity) {
+    if (quantity.value < props.maxQuantity) {
         quantity.value += 1;
     }
 };
 
 const decreaseQuantity = () => {
-    if (quantity.value > minQuantity) {
+    if (quantity.value > props.minQuantity) {
         quantity.value -= 1;
     }
 };
