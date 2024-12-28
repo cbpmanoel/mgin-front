@@ -23,8 +23,12 @@
                     <object v-html="cartIco"></object>
                     <h2 class="text-2xl font-semibold">Order total</h2>
                 </div>
-                <div>Items: {{ props.totalItems }}</div>
-                <div>Total: ${{ props.totalPrice.toFixed(2) }}</div>
+                <div class="grid grid-cols-2 grid-rows-2 gap-2 w-full p-1">
+                    <div>Items:</div>
+                    <div>{{ props.totalItems }}</div>
+                    <div>Total:</div>
+                    <div>${{ props.totalPrice.toFixed(2) }}</div>
+                </div>
                 <div class="mb-2" />
                 <button @click="proceedToCheckout()">Review & Checkout</button>
             </div>
@@ -65,8 +69,8 @@ const proceedToCheckout = () => {
 
 <style scoped>
 .sidepanel {
-    /* Content is centered vertically, each element per row */
-    @apply fixed bg-gray-800 text-white h-screen w-[20%] min-w-[20%];
+    /* Content is centered vertically, each element per row -  Width is fixed to 52rem */
+    @apply fixed bg-gray-800 text-white h-screen w-52 min-w-52;
 }
 
 .sidepanel-layout {
@@ -78,7 +82,7 @@ const proceedToCheckout = () => {
 }
 
 .sidepanel-title-area {
-    @apply flex items-center w-full justify-evenly;
+    @apply flex items-center w-full justify-items-start gap-4;
 }
 
 .sidepanel-container button {
