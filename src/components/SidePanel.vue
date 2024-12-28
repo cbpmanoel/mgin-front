@@ -7,14 +7,17 @@
                     <object v-html="categoryIco"></object>
                     <h2 class="text-2xl font-semibold">Categories</h2>
                 </div>
-                <button
+
+                <!-- Category buttons are generated dynamically -->
+                <CustomButton
+                    :color="'gray'"
+                    :class="'w-full mb-2 p-2'"
                     @click="scrollTo(category.name)"
-                    class="w-full mb-2"
                     v-for="category in props.categories"
                     :key="category.id"
                 >
                     {{ category.name }}
-                </button>
+                </CustomButton>
             </div>
 
             <!-- Order total section -->
@@ -30,7 +33,13 @@
                     <div>${{ props.totalPrice.toFixed(2) }}</div>
                 </div>
                 <div class="mb-2" />
-                <button @click="proceedToCheckout()">Review & Checkout</button>
+                <CustomButton
+                    :color="'gray'"
+                    :class="'w-full mb-2 p-2'"
+                    @click="proceedToCheckout"
+                >
+                    Review & Checkout
+                </CustomButton>
             </div>
         </div>
     </div>
@@ -39,6 +48,7 @@
 <script setup>
 import categoryIco from "@/assets/category.svg?raw";
 import cartIco from "@/assets/cart.svg?raw";
+import CustomButton from "./CustomButton.vue";
 
 const props = defineProps({
     categories: {
@@ -85,7 +95,7 @@ const proceedToCheckout = () => {
     @apply flex items-center w-full justify-items-start gap-4;
 }
 
-.sidepanel-container button {
-    @apply bg-gray-600 text-white p-2 rounded-md w-full;
+.order-info-area {
+    @apply grid grid-cols-2 grid-rows-2 gap-2 w-full p-1;
 }
 </style>

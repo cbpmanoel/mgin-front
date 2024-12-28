@@ -5,37 +5,45 @@
         <div class="p-2">
             <!-- Product description and price -->
             <h2 class="description">{{ props.description }}</h2>
-            <p class="price">{{ currencyAcr }}{{ props.price.toFixed(2) }}</p>
+            <p class="price">
+                {{ currencyAbbrev }}{{ props.price.toFixed(2) }}
+            </p>
 
             <!-- Quantity and quantity management buttons -->
             <div class="quantity-container">
-                <button
+                <CustomButton
+                    :color="'blue'"
+                    :class="`h-8 w-8`"
                     :disabled="disableDecrease"
                     @click="decreaseQuantity"
-                    class="button quantity-button"
                 >
                     <object v-html="minusIco" />
-                </button>
+                </CustomButton>
+
                 <span class="quantity-text">{{ quantity }}</span>
-                <button
+
+                <CustomButton
+                    :color="'blue'"
+                    :class="`h-8 w-8`"
                     :disabled="disableIncrease"
                     @click="increaseQuantity"
-                    class="button quantity-button"
                 >
                     <object v-html="plusIco" />
-                </button>
+                </CustomButton>
             </div>
 
             <!-- Add to cart button: Disabled if quantity is 0 -->
             <div class="mt-2">
-                <button
+                <CustomButton
+                    :color="'green'"
+                    :class="`w-full p-2 font-semibold `"
+                    :content-align="`around`"
                     :disabled="disableAddToCart"
                     @click="addToCart"
-                    class="button add-to-cart-button"
                 >
                     <object v-html="addToCartIco" />
                     Add to cart
-                </button>
+                </CustomButton>
             </div>
         </div>
     </article>
@@ -46,6 +54,7 @@ import { ref, computed } from "vue";
 import minusIco from "@/assets/minus.svg?raw";
 import plusIco from "@/assets/plus.svg?raw";
 import addToCartIco from "@/assets/addToCart.svg?raw";
+import CustomButton from "@/components/CustomButton.vue";
 
 const quantity = ref(0);
 
@@ -78,12 +87,15 @@ const props = defineProps({
         type: Number,
         default: 10,
     },
-    currencyAcr: {
+    currencyAbbrev: {
         type: String,
         default: "$",
     },
 });
 
+const emit = defineEmits(["add-to-cart"]);
+
+// Flags to disable buttons based on quantity
 const disableDecrease = computed(() => quantity.value === props.minQuantity);
 const disableIncrease = computed(() => quantity.value === props.maxQuantity);
 const disableAddToCart = computed(() => quantity.value === props.minQuantity);
@@ -101,14 +113,21 @@ const decreaseQuantity = () => {
 };
 
 const addToCart = () => {
-    // Add item to cart
-    console.log("Item added to cart");
+    // Emit contains only the item ids and quantity
+    // The parent component will handle the rest
+    emit("add-to-cart", {
+        id: props.id,
+        categoryId: props.categoryId,
+        quantity: quantity.value,
+    });
+
+    // Reset the quantity to 0
     quantity.value = 0;
 };
 </script>
 
 <style scoped>
-/* Card bacground, shadow, and border radius */
+/* Card background, shadow, and border radius */
 .item-card {
     @apply bg-white shadow-md rounded-lg overflow-hidden;
     max-width: 200px;
