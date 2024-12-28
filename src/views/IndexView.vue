@@ -1,34 +1,12 @@
 <template>
-    <!-- Sidebar: Categories -->
-    <div class="sidebar">
-        <div class="sidebar-layout">
-            <div class="sidebar-container">
-                <div class="mb-4 sidebar-title-area">
-                    <object v-html="categoryIco"></object>
-                    <h2 class="text-2xl font-semibold">Categories</h2>
-                </div>
-                <button
-                    @click="scrollTo(category.name)"
-                    class="w-full mb-2"
-                    v-for="category in categories"
-                    :key="category.id"
-                >
-                    {{ category.name }}
-                </button>
-            </div>
-
-            <div class="sidebar-container">
-                <div class="mb-2 sidebar-title-area">
-                    <object v-html="cartIco"></object>
-                    <h2 class="text-2xl font-semibold">Order total</h2>
-                </div>
-                <div>Items: {{ totalItems }}</div>
-                <div>Total: ${{ totalPrice.toFixed(2) }}</div>
-                <div class="mb-2" />
-                <button @click="proceedToCheckout()">Review & Checkout</button>
-            </div>
-        </div>
-    </div>
+    <!-- Side panel: Categories and Checkout area -->
+    <SidePanel
+        :categories="categories"
+        :totalItems="totalItems"
+        :totalPrice="totalPrice"
+        @scroll-to="scrollTo"
+        @proceed-to-checkout="proceedToCheckout"
+    />
 
     <!-- Main content: Products separated by category -->
     <div
@@ -56,17 +34,18 @@
 
 <script setup>
 import { computed, ref } from "vue";
+import SidePanel from "@/components/SidePanel.vue";
 import ItemCard from "@/components/ItemCard.vue";
 import BaseContainer from "@/components/BaseContainer.vue";
 import { useCart, useCategories } from "@/composables/useCart";
-import cartIco from "@/assets/cart.svg?raw";
-import categoryIco from "@/assets/category.svg?raw";
 
+// Retrieve cart and categories from the composable
+// Should be retrieved from the API
 const { cart } = useCart();
 const { categories } = useCategories();
 
 // Create refs for total items and total price
-// May be used in the future for a checkout page
+// Used to display the order total in the sidebar
 const totalItems = ref(0);
 const totalPrice = ref(0);
 
@@ -95,30 +74,14 @@ const scrollTo = (category) => {
     const element = categoryRefs.value[category];
     element?.scrollIntoView({ behavior: "smooth" });
 };
+
+// Proceed to checkout
+const proceedToCheckout = () => {
+    console.log("Proceeding to checkout");
+};
 </script>
 
 <style scoped>
-.sidebar {
-    /* Content is centered vertically, each element per row */
-    @apply fixed bg-gray-600 text-white h-screen w-[20%] min-w-[20%];
-}
-
-.sidebar-layout {
-    @apply flex flex-col justify-between h-full;
-}
-
-.sidebar-container {
-    @apply flex flex-col items-center p-4;
-}
-
-.sidebar-title-area {
-    @apply flex items-center w-full justify-evenly;
-}
-
-.sidebar-container button {
-    @apply bg-gray-800 text-white p-2 rounded-md w-full;
-}
-
 .main-content {
     @apply justify-center items-center w-[80%] ml-[20%] p-4;
 }
