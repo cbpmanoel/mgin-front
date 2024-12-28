@@ -17,7 +17,7 @@
     >
         <div v-if="category.items.length > 0" class="mb-10">
             <!-- Item cards -->
-            <BaseContainer :title="category.category">
+            <GridContainer :title="category.category">
                 <ItemCard
                     v-for="item in category.items"
                     :key="item.id"
@@ -27,7 +27,7 @@
                     :price="item.price"
                     :imageSrc="item.imageSrc"
                 />
-            </BaseContainer>
+            </GridContainer>
         </div>
     </div>
 </template>
@@ -36,8 +36,9 @@
 import { computed, ref } from "vue";
 import SidePanel from "@/components/SidePanel.vue";
 import ItemCard from "@/components/ItemCard.vue";
-import BaseContainer from "@/components/BaseContainer.vue";
+import GridContainer from "@/components/GridContainer.vue";
 import { useCart, useCategories } from "@/composables/useCart";
+import { useRouter } from "vue-router";
 
 // Retrieve cart and categories from the composable
 // Should be retrieved from the API
@@ -51,6 +52,9 @@ const totalPrice = ref(0);
 
 // Create a ref object to hold category refs
 const categoryRefs = ref({});
+
+// Router instance
+const router = useRouter();
 
 // Group items by category
 const productList = computed(() => {
@@ -78,6 +82,7 @@ const scrollTo = (category) => {
 // Proceed to checkout
 const proceedToCheckout = () => {
     console.log("Proceeding to checkout");
+    router.push("/checkout");
 };
 </script>
 

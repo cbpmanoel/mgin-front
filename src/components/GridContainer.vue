@@ -2,7 +2,7 @@
     <div v-if="props.title" class="title">
         {{ props.title }}
     </div>
-    <section class="base-container">
+    <section class="grid-container">
         <slot />
     </section>
 </template>
@@ -19,7 +19,7 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.base-container {
+.grid-container {
     @apply grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 container;
 }
 
