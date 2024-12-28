@@ -16,7 +16,7 @@
                 >
                     <object v-html="minusIco" />
                 </button>
-                <span class="quantityText">{{ quantity }}</span>
+                <span class="quantity-text">{{ quantity }}</span>
                 <button
                     :disabled="disableIncrease"
                     @click="increaseQuantity"
@@ -31,7 +31,7 @@
                 <button
                     :disabled="disableAddToCart"
                     @click="addToCart"
-                    class="button cart-button"
+                    class="button add-to-cart-button"
                 >
                     <object v-html="addToCartIco" />
                     Add to cart
@@ -128,29 +128,13 @@ const addToCart = () => {
     @apply text-gray-500;
 }
 
-/* Flex container for quantity and buttons */
-.quantity-container {
-    @apply flex items-center justify-between mt-4;
-}
-
-/* Quantity text styling */
+/* Quantity text */
 .quantity-text {
     @apply text-gray-800 font-semibold;
 }
 
-.quantity-button {
-    @apply flex items-center justify-center w-8 h-8;
-}
-
-.cart-button {
-    @apply flex items-center justify-around bg-blue-500 text-white p-2 w-full;
-}
-
-.cart-button:active {
-    @apply bg-blue-600;
-}
-
-.cart-button:disabled {
-    @apply bg-gray-300 text-gray-500;
+/* Flex container for quantity and buttons */
+.quantity-container {
+    @apply flex items-center justify-between mt-4;
 }
 </style>
