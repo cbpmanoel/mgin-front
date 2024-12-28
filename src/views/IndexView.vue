@@ -88,6 +88,6 @@ const proceedToCheckout = () => {
 
 <style scoped>
 .main-content {
-    @apply justify-center items-center w-[80%] ml-[20%] p-4;
+    @apply justify-center items-center ml-52 p-4;
 }
 </style>
