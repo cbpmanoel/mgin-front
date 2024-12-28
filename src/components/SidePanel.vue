@@ -66,7 +66,7 @@ const proceedToCheckout = () => {
 <style scoped>
 .sidepanel {
     /* Content is centered vertically, each element per row */
-    @apply fixed bg-gray-600 text-white h-screen w-[20%] min-w-[20%];
+    @apply fixed bg-gray-800 text-white h-screen w-[20%] min-w-[20%];
 }
 
 .sidepanel-layout {
@@ -82,6 +82,6 @@ const proceedToCheckout = () => {
 }
 
 .sidepanel-container button {
-    @apply bg-gray-800 text-white p-2 rounded-md w-full;
+    @apply bg-gray-600 text-white p-2 rounded-md w-full;
 }
 </style>
