@@ -92,7 +92,7 @@ const navigateToCart = () => {
 }
 
 .sidepanel-layout {
-    @apply flex flex-col items-center p-2 w-full h-full justify-between;
+    @apply flex flex-col items-center p-1 w-full h-full justify-between;
 }
 
 .sidepanel-container {
