@@ -5,19 +5,17 @@
         <div class="p-2">
             <!-- Product description and price -->
             <h2 class="description">{{ props.description }}</h2>
-            <p class="price">
-                {{ currencyAbbrev }}{{ props.price.toFixed(2) }}
-            </p>
+            <p class="price">${{ props.price.toFixed(2) }}</p>
 
             <!-- Quantity and quantity management buttons -->
             <div class="quantity-container">
                 <CustomButton
                     :color="'blue'"
                     :class="`h-8 w-8`"
-                    :disabled="disableDecrease"
+                    :disabled="quantity === props.minQuantity"
                     @click="decreaseQuantity"
                 >
-                    <object v-html="minusIco" />
+                    <object v-html="minusIco" v-once />
                 </CustomButton>
 
                 <span class="quantity-text">{{ quantity }}</span>
@@ -25,10 +23,10 @@
                 <CustomButton
                     :color="'blue'"
                     :class="`h-8 w-8`"
-                    :disabled="disableIncrease"
+                    :disabled="quantity === props.maxQuantity"
                     @click="increaseQuantity"
                 >
-                    <object v-html="plusIco" />
+                    <object v-html="plusIco" v-once />
                 </CustomButton>
             </div>
 
@@ -37,11 +35,10 @@
                 <CustomButton
                     :color="'green'"
                     :class="`w-full p-2 font-semibold `"
-                    :content-align="`around`"
-                    :disabled="disableAddToCart"
+                    :content-align="`evenly`"
                     @click="addToCart"
                 >
-                    <object v-html="addToCartIco" />
+                    <object v-html="addToCartIco" v-once />
                     Add to cart
                 </CustomButton>
             </div>
@@ -50,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import minusIco from "@/assets/minus.svg?raw";
 import plusIco from "@/assets/plus.svg?raw";
 import addToCartIco from "@/assets/addToCart.svg?raw";
@@ -87,18 +84,9 @@ const props = defineProps({
         type: Number,
         default: 10,
     },
-    currencyAbbrev: {
-        type: String,
-        default: "$",
-    },
 });
 
 const emit = defineEmits(["add-to-cart"]);
-
-// Flags to disable buttons based on quantity
-const disableDecrease = computed(() => quantity.value === props.minQuantity);
-const disableIncrease = computed(() => quantity.value === props.maxQuantity);
-const disableAddToCart = computed(() => quantity.value === props.minQuantity);
 
 const increaseQuantity = () => {
     if (quantity.value < props.maxQuantity) {
@@ -118,19 +106,22 @@ const addToCart = () => {
     emit("add-to-cart", {
         id: props.id,
         categoryId: props.categoryId,
+
+        // Returning price just in case it changes in the future
+        price: props.price,
         quantity: quantity.value,
     });
 
     // Reset the quantity to 0
-    quantity.value = 0;
+    //quantity.value = 0;
 };
 </script>
 
 <style scoped>
 /* Card background, shadow, and border radius */
 .item-card {
-    @apply bg-white shadow-md rounded-lg overflow-hidden;
-    max-width: 200px;
+    @apply bg-white shadow-md overflow-hidden;
+    max-width: 300px;
 }
 
 /* Image styling - Covers the whole card width */

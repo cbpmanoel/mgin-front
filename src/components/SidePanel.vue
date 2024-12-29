@@ -4,7 +4,7 @@
             <!-- Category section -->
             <div class="sidepanel-container">
                 <div class="mb-4 sidepanel-title-area">
-                    <object v-html="categoryIco"></object>
+                    <object v-html="categoryIco" v-once />
                     <h2 class="text-2xl font-semibold">Categories</h2>
                 </div>
 
@@ -23,20 +23,28 @@
             <!-- Order total section -->
             <div class="sidepanel-container">
                 <div class="mb-2 sidepanel-title-area">
-                    <object v-html="cartIco"></object>
+                    <object v-html="cartIco" v-once />
                     <h2 class="text-2xl font-semibold">Order total</h2>
                 </div>
-                <div class="grid grid-cols-2 grid-rows-2 gap-2 w-full p-1">
-                    <div>Items:</div>
-                    <div>{{ props.totalItems }}</div>
-                    <div>Total:</div>
-                    <div>${{ props.totalPrice.toFixed(2) }}</div>
+                <div class="grid w-full grid-cols-2 grid-rows-2 gap-2 p-1 mb-2">
+                    <div class="text-lg font-semibold cell-center-left">
+                        Items:
+                    </div>
+                    <div class="text-lg cell-center-right">
+                        {{ props.totalItems }}
+                    </div>
+                    <div class="text-lg font-semibold cell-center-left">
+                        Total:
+                    </div>
+                    <div class="text-lg cell-center-right">
+                        ${{ props.totalPrice.toFixed(2) }}
+                    </div>
                 </div>
-                <div class="mb-2" />
                 <CustomButton
-                    :color="'gray'"
-                    :class="'w-full mb-2 p-2'"
-                    @click="proceedToCheckout"
+                    :color="'green'"
+                    :class="'w-full p-2'"
+                    :content-align="'evenly'"
+                    @click="navigateToCart"
                 >
                     Review & Checkout
                 </CustomButton>
@@ -66,33 +74,33 @@ const props = defineProps({
 });
 
 // Emit events to parent component
-const emit = defineEmits(["scroll-to", "proceed-to-checkout"]);
+const emit = defineEmits(["scroll-to", "navigate-to-cart"]);
 
 const scrollTo = (category) => {
     emit("scroll-to", category);
 };
 
-const proceedToCheckout = () => {
-    emit("proceed-to-checkout");
+const navigateToCart = () => {
+    emit("navigate-to-cart");
 };
 </script>
 
 <style scoped>
 .sidepanel {
     /* Content is centered vertically, each element per row -  Width is fixed to 52rem */
-    @apply fixed bg-gray-800 text-white h-screen w-52 min-w-52;
+    @apply bg-gray-100 text-black w-full h-full min-w-52;
 }
 
 .sidepanel-layout {
-    @apply flex flex-col justify-between h-full;
+    @apply flex flex-col items-center p-2 w-full h-full justify-between;
 }
 
 .sidepanel-container {
-    @apply flex flex-col items-center p-4;
+    @apply flex flex-col items-center p-2 w-full;
 }
 
 .sidepanel-title-area {
-    @apply flex items-center w-full justify-items-start gap-4;
+    @apply flex items-center w-full justify-items-start gap-2;
 }
 
 .order-info-area {

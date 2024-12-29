@@ -6,8 +6,8 @@ export const button = tv({
     variants: {
         color: {
             green: "bg-green-500 text-white hover:bg-green-600 active:bg-green-700",
-            red: "bg-red-500 text-white hover:bg-red-600 active:bg-red-700",
-            blue: "bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700",
+            red: "bg-red-400 text-white hover:bg-red-500 active:bg-red-700",
+            blue: "bg-blue-400 text-white hover:bg-blue-500 active:bg-blue-700",
             gray: "bg-gray-600 text-white hover:bg-gray-700 active:bg-gray-800",
         },
         disabled: {
@@ -20,6 +20,8 @@ export const button = tv({
             right: "flex items-center justify-end",
             around: "flex items-center justify-around",
             between: "flex items-center justify-between",
+            evenly: "flex items-center justify-evenly",
+            stretch: "flex items-stretch justify-center",
         },
     },
     defaultVariants: {

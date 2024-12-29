@@ -1,8 +1,22 @@
 <template>
-    <div class="single-col-layout">
-        <router-view />
+    <div class="flex flex-col flex-1 min-h-screen">
+        <!-- Header bar -->
+        <div class="bg-gray-800 text-white sticky-nav-top h-16">
+            <HeaderBar :title="title" />
+        </div>
+        <!-- View content -->
+        <div class="bg-gray-800">
+            <router-view />
+        </div>
     </div>
 </template>
+
+<script setup>
+import { ref } from "vue";
+import HeaderBar from "./components/HeaderBar.vue";
+
+const title = ref("Shop");
+</script>
 
 <style scoped>
 .svg-white {

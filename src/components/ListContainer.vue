@@ -2,25 +2,36 @@
     <div v-if="props.title" class="title">
         {{ props.title }}
     </div>
-    <section class="grid-container">
+    <section :class="listContainerClass">
         <slot />
     </section>
 </template>
 
 <script setup>
-import { defineProps } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
     title: {
         type: String,
         default: "",
     },
+    divideItems: {
+        type: Boolean,
+        default: true,
+    },
+});
+
+const listContainerClass = computed(() => {
+    return {
+        "list-container": true,
+        "divide-y divide-gray-200": props.divideItems,
+    };
 });
 </script>
 
 <style scoped>
-.grid-container {
-    @apply grid gap-4 grid-cols-1 container;
+.list-container {
+    @apply grid grid-cols-1 container;
 }
 
 .title {

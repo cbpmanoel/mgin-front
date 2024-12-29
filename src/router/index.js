@@ -1,25 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Index from "@/views/IndexView.vue";
-import Checkout from "@/views/CheckoutView.vue";
-import Payment from "@/views/PaymentView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: "/",
-            name: "Home",
-            component: Index,
+            name: "Products",
+            component: () => import("@/views/ProductsView.vue"),
+        },
+        {
+            path: "/cart",
+            name: "Your Cart",
+            component: () => import("@/views/CartView.vue"),
         },
         {
             path: "/checkout",
             name: "Checkout",
-            component: Checkout,
-        },
-        {
-            path: "/payment",
-            name: "Payment",
-            component: Payment,
+            component: () => import("@/views/PaymentView.vue"),
         },
     ],
 });
