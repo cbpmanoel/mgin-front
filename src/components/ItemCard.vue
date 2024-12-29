@@ -121,7 +121,7 @@ const addToCart = () => {
 <style scoped>
 /* Card background, shadow, and border radius */
 .item-card {
-    @apply bg-white shadow-md overflow-hidden;
+    @apply bg-white shadow-md overflow-hidden min-w-48;
     max-width: 300px;
 }
 
