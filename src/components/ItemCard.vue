@@ -108,6 +108,7 @@ const addToCart = () => {
         categoryId: props.categoryId,
 
         // Returning price just in case it changes in the future
+        name: props.description,
         price: props.price,
         quantity: quantity.value,
     });

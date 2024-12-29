@@ -92,6 +92,7 @@ const productList = computed(() => {
 
 // Callbacks
 function onAddToCart(payload) {
+    console.log("Add to cart");
     console.log(payload);
 
     console.log("Update product quantity");
@@ -100,18 +101,10 @@ function onAddToCart(payload) {
             id: payload.id,
             categoryId: payload.categoryId,
             price: payload.price,
+            name: payload.name,
         },
         payload.quantity,
     );
-
-    // Need fix for the quantity issue
-    // for (let i = 0; i < payload.quantity; i++) {
-    //     addToCart({
-    //         id: payload.id,
-    //         categoryId: payload.categoryId,
-    //         price: payload.price,
-    //     });
-    // }
 }
 
 function onNavigateToCart() {
