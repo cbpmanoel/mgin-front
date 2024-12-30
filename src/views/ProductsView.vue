@@ -10,7 +10,8 @@
                         :itemName="selectedItem.name"
                         :itemImage="selectedItem.imageSrc"
                         :itemQuantity="selectedItem.quantity"
-                        @confirm="onModalConfirm"
+                        @confirm="onQuantitySelectorConfirm"
+                        @cancel="showModal = false"
                     />
                 </ModalWindow>
             </div>
@@ -75,7 +76,7 @@ const showModal = ref(true);
 // Dummy selected item
 const selectedItem = ref({
     name: "Product name",
-    imageSrc: "https://placehold.co/200x200",
+    imageSrc: "https://placehold.co/400x400/orange/white",
     quantity: 4,
 });
 
@@ -120,7 +121,7 @@ const productList = computed(() => {
 });
 
 // Callbacks
-function onModalConfirm(payload) {
+function onQuantitySelectorConfirm(payload) {
     // Update the item's quantity
     updateProductQty(
         {

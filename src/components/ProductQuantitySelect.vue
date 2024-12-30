@@ -1,52 +1,64 @@
 <template>
     <!-- Modal content -->
     <div class="component-container">
-        <img :src="item.image" alt="Product Image" />
-        <h2 class="text-lg font-semibold">
-            <p>
-                Select
-                <span style="font-style: italic">{{ item.name }}</span>
-                's quantity
-            </p>
-        </h2>
+        <!-- Product Image -->
+        <img
+            :src="item.image"
+            alt="Product Image"
+            class="max-h-[512px] max-w-[512px]"
+        />
 
-        <!-- Quantity control area -->
-        <div class="cell-center">
-            <CustomButton
-                :color="'blue'"
-                :class="'w-8 h-8'"
-                :disabled="item.quantity <= item.minQuantity"
-                @click="onDecreaseQuantity"
-            >
-                <object v-html="minusIco" v-once />
-            </CustomButton>
-            <span class="w-8 h-8 cell-center">{{ item.quantity }}</span>
-            <CustomButton
-                :color="'blue'"
-                :class="'w-8 h-8'"
-                :disabled="item.quantity >= item.maxQuantity"
-                @click="onIncreaseQuantity"
-            >
-                <object v-html="plusIco" v-once />
-            </CustomButton>
-        </div>
-        <!-- Cancel, Remove and Confirm buttons -->
-        <div class="flex justify-between w-full">
-            <CustomButton :color="'gray'" @click="onCancel">
-                Cancel
-            </CustomButton>
-            <!-- Remove button only appears when the item already is on the cart -->
-            <CustomButton
-                v-if="quantityOnOpen > 0"
-                :color="'red'"
-                @click="onRemove"
-            >
-                Remove
-            </CustomButton>
+        <!-- Product Details -->
+        <div class="flex flex-col w-full gap-2 mt-4">
+            <div class="text-xl font-semibold cell-center">
+                <span>
+                    Select
+                    <span style="font-style: italic">{{ item.name }}</span
+                    >'s quantity:
+                </span>
+            </div>
 
-            <CustomButton :color="'blue'" @click="onConfirm">
-                {{ confirmationButtonText }}
-            </CustomButton>
+            <!-- Quantity control -->
+            <div class="w-full cell-center">
+                <QuantitySelector
+                    :quantity="item.quantity"
+                    :minusIco="minusIco"
+                    :plusIco="plusIco"
+                    :iconWidth="'w-10'"
+                    :iconHeight="'h-10'"
+                    @quantity-changed="onQuantityChanged"
+                />
+            </div>
+
+            <!-- Cancel, Remove and Confirm buttons -->
+            <div class="flex items-center w-full gap-1 justify-evenly h-[45px]">
+                <CustomButton
+                    :color="'gray'"
+                    class="min-w-[25%] p-2"
+                    @click="onCancel"
+                >
+                    Cancel
+                </CustomButton>
+                <!-- Remove button only appears when the item already is on the cart -->
+                <CustomButton
+                    v-if="quantityOnOpen > 0"
+                    class="min-w-[25%] p-2"
+                    :color="'red'"
+                    @click="onRemove"
+                >
+                    Remove
+                </CustomButton>
+
+                <CustomButton
+                    :color="'blue'"
+                    class="w-full p-2 font-semibold"
+                    :contentAlign="'evenly'"
+                    @click="onConfirm"
+                >
+                    <object v-html="addToCartIco" v-once />
+                    {{ confirmationButtonText }}
+                </CustomButton>
+            </div>
         </div>
     </div>
 </template>
@@ -56,6 +68,8 @@ import { ref, defineEmits, computed } from "vue";
 import CustomButton from "@/components/CustomButton.vue";
 import minusIco from "@/assets/minus.svg?raw";
 import plusIco from "@/assets/plus.svg?raw";
+import addToCartIco from "@/assets/addToCart.svg?raw";
+import QuantitySelector from "./QuantitySelector.vue";
 
 const props = defineProps({
     itemName: {
@@ -102,7 +116,7 @@ const confirmationButtonText = computed(() => {
     if (quantityOnOpen.value === 0) {
         return "Add to cart";
     }
-    return "Update quantity";
+    return "Update your cart";
 });
 
 const emit = defineEmits(["confirm", "cancel"]);
@@ -110,29 +124,37 @@ const emit = defineEmits(["confirm", "cancel"]);
 // Callbacks
 // Pass quantity as 0 to remove the item
 const onRemove = () => {
-    console.log("Remove item");
+    console.log("Modal asked for remove");
     emit("confirm", { quantity: 0 });
 };
 
 // Return the selected quantity
 const onConfirm = () => {
-    console.log("Modal confirmed");
+    console.log("Modal asked for update");
     emit("confirm", { quantity: item.value.quantity });
 };
 
-// Quantity area manipulators
-const onIncreaseQuantity = () => {
-    if (item.value.quantity < props.maxQuantity) {
-        item.value.quantity++;
-    }
-    console.log("onIncreaseQuantity:", item.value.quantity);
+const onCancel = () => {
+    console.log("Modal canceled");
+    emit("cancel");
 };
 
-const onDecreaseQuantity = () => {
-    if (item.value.quantity > props.minQuantity) {
-        item.value.quantity--;
+// Handler to the quantity change event
+const onQuantityChanged = ({ quantity, action }) => {
+    console.log("Quantity changed", quantity);
+
+    switch (action) {
+        case "increase":
+            item.value.quantity++;
+            console.log("increased");
+            break;
+        case "decrease":
+            item.value.quantity--;
+            console.log("decrease");
+            break;
     }
-    console.log("onDecreaseQuantity:", item.value.quantity);
+
+    console.log("New  qty: ", item.value.quantity);
 };
 </script>
 
