@@ -42,6 +42,10 @@ const props = defineProps({
         type: String,
         default: "bg-black opacity-70",
     },
+    border: {
+        type: String,
+        default: "border-4 border-gray-500",
+    },
 });
 
 // Styles
@@ -65,7 +69,7 @@ const onClickedOutside = () => {
 }
 
 .modal-window {
-    @apply fixed inset-0  shadow-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md p-4;
+    @apply fixed inset-0  shadow-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md p-2;
 }
 
 .modal-content {
