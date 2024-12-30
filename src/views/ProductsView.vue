@@ -2,14 +2,17 @@
     <div>
         <transition name="modal">
             <div :key="showModal">
-                <SelectQuantityModal
+                <ModalWindow
                     v-if="showModal"
-                    :itemName="selectedItem.name"
-                    :itemImage="selectedItem.imageSrc"
-                    :itemQuantity="selectedItem.quantity"
-                    @cancel="showModal = false"
-                    @confirm="onModalConfirm"
-                />
+                    @clicked-outside="showModal = false"
+                >
+                    <ProductQuantitySelect
+                        :itemName="selectedItem.name"
+                        :itemImage="selectedItem.imageSrc"
+                        :itemQuantity="selectedItem.quantity"
+                        @confirm="onModalConfirm"
+                    />
+                </ModalWindow>
             </div>
         </transition>
         <!-- Side panel: Categories and Checkout area -->
@@ -63,10 +66,13 @@ import { useCart } from "@/composables/useCart";
 import { useRouterNavigation } from "@/composables/useRouterNavigation";
 import { useCategories } from "@/composables/useCategories";
 import { useProducts } from "@/composables/useProducts";
-import SelectQuantityModal from "@/components/SelectQuantityModal.vue";
+import ProductQuantitySelect from "@/components/ProductQuantitySelect.vue";
+import ModalWindow from "@/components/ModalWindow.vue";
 
 // Modal controllers
 const showModal = ref(true);
+
+// Dummy selected item
 const selectedItem = ref({
     name: "Product name",
     imageSrc: "https://placehold.co/200x200",
