@@ -30,25 +30,14 @@
                         </div>
                         <!-- Column 3: Quantity -->
                         <div class="cell-center">
-                            <CustomButton
-                                :color="'blue'"
-                                :class="'w-8 h-8'"
-                                :disabled="item.quantity <= 1"
-                                @click="onDecreaseQuantity(item)"
-                            >
-                                <object v-html="minusIco" v-once />
-                            </CustomButton>
-                            <span class="w-8 h-8 cell-center">{{
-                                item.quantity
-                            }}</span>
-                            <CustomButton
-                                :color="'blue'"
-                                :class="'w-8 h-8'"
-                                :disabled="item.quantity >= 10"
-                                @click="onIncreaseQuantity(item)"
-                            >
-                                <object v-html="plusIco" v-once />
-                            </CustomButton>
+                            <QuantitySelector
+                                :quantity="item.quantity"
+                                :minQuantity="1"
+                                :maxQuantity="10"
+                                @quantity-changed="
+                                    onQuantityChanged(item, $event)
+                                "
+                            />
                             <CustomButton
                                 :color="'red'"
                                 :class="'w-8 h-8 ml-2'"
@@ -94,6 +83,7 @@
 import { computed } from "vue";
 import CustomButton from "@/components/CustomButton.vue";
 import ListContainer from "@/components/ListContainer.vue";
+import QuantitySelector from "@/components/QuantitySelector.vue";
 import minusIco from "@/assets/minus.svg?raw";
 import plusIco from "@/assets/plus.svg?raw";
 import removeFromCartIco from "@/assets/removeFromCart.svg?raw";
@@ -119,17 +109,20 @@ const total = computed(() => totalCartValue.value);
 const totalItems = computed(() => totalItemsInCart.value);
 console.log("Cart items", cart.value);
 
-// Decrease quantity of an item
-function onDecreaseQuantity(item) {
-    console.log("Decrease quantity of item", item);
-    decreaseProductQty(item);
-}
+const onQuantityChanged = (item, { quantity, action }) => {
+    console.log("Quantity changed", quantity);
 
-// Increase quantity of an item
-function onIncreaseQuantity(item) {
-    console.log("Increase quantity of item", item);
-    increaseProductQty(item);
-}
+    switch (action) {
+        case "increase":
+            console.log("Increase quantity of item", item);
+            increaseProductQty(item);
+            break;
+        case "decrease":
+            console.log("Decrease quantity of item", item);
+            decreaseProductQty(item);
+            break;
+    }
+};
 
 // Remove an item from the cart
 function onRemoveFromCart(item) {
