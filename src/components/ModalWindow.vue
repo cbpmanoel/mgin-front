@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { defineEmits, ref } from "vue";
+import { ref } from "vue";
 
 const emit = defineEmits(["clicked-outside"]);
 

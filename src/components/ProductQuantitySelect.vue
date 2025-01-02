@@ -3,7 +3,7 @@
     <div class="component-container">
         <!-- Product Image -->
         <img
-            :src="item.image"
+            :src="image"
             alt="Product Image"
             class="max-h-[512px] max-w-[512px]"
         />
@@ -13,7 +13,7 @@
             <div class="text-xl font-semibold cell-center">
                 <span>
                     Select
-                    <span style="font-style: italic">{{ item.name }}</span
+                    <span style="font-style: italic">{{ name }}</span
                     >'s quantity:
                 </span>
             </div>
@@ -21,7 +21,7 @@
             <!-- Quantity control -->
             <div class="w-full cell-center">
                 <QuantitySelector
-                    :quantity="item.quantity"
+                    :quantity="mutableQuantity"
                     :minusIco="minusIco"
                     :plusIco="plusIco"
                     :iconWidth="'w-10'"
@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, computed } from "vue";
+import { ref, toRefs, computed } from "vue";
 import CustomButton from "@/components/CustomButton.vue";
 import minusIco from "@/assets/minus.svg?raw";
 import plusIco from "@/assets/plus.svg?raw";
@@ -72,16 +72,16 @@ import addToCartIco from "@/assets/addToCart.svg?raw";
 import QuantitySelector from "./QuantitySelector.vue";
 
 const props = defineProps({
-    itemName: {
+    name: {
         type: String,
         required: true,
     },
-    itemImage: {
+    image: {
         type: String,
         required: false,
         default: "",
     },
-    itemQuantity: {
+    quantity: {
         type: Number,
         required: true,
         default: 0,
@@ -98,16 +98,13 @@ const props = defineProps({
     },
 });
 
-const quantityOnOpen = ref(props.itemQuantity);
-
 // Initialize the item references
-const item = ref({
-    name: props.itemName,
-    quantity: props.itemQuantity,
-    image: props.itemImage,
-    minQuantity: props.minQuantity,
-    maxQuantity: props.maxQuantity,
-});
+const quantityOnOpen = ref(props.quantity); // Quantity when the modal was opened
+const mutableQuantity = ref(props.quantity); // Mutable quantity
+const { name, image } = toRefs(props);
+
+console.log("ProductQuantitySelect props");
+console.log(props);
 
 // Compute the confirm's button text the explicitly show
 // that the quantity will be changed if the item is already
@@ -131,7 +128,7 @@ const onRemove = () => {
 // Return the selected quantity
 const onConfirm = () => {
     console.log("Modal asked for update");
-    emit("confirm", { quantity: item.value.quantity });
+    emit("confirm", { quantity: mutableQuantity.value });
 };
 
 const onCancel = () => {
@@ -145,16 +142,16 @@ const onQuantityChanged = ({ quantity, action }) => {
 
     switch (action) {
         case "increase":
-            item.value.quantity++;
+            mutableQuantity.value++;
             console.log("increased");
             break;
         case "decrease":
-            item.value.quantity--;
+            mutableQuantity.value--;
             console.log("decrease");
             break;
     }
 
-    console.log("New  qty: ", item.value.quantity);
+    console.log("New  qty: ", mutableQuantity.value);
 };
 </script>
 
