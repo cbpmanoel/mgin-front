@@ -14,8 +14,8 @@
 
                 <!-- Cart items -->
                 <div
-                    v-for="item in computedItemsOnCart"
-                    :key="item.id"
+                    v-for="[itemKey, item] in cart"
+                    :key="itemKey"
                     class="custom-list-item"
                 >
                     <!-- Item details -->
@@ -107,25 +107,17 @@ const { navigateToCheckout } = useRouterNavigation();
 // Cart composable
 const {
     cart,
+    totalCartValue,
+    totalItemsInCart,
     removeFromCart,
     increaseProductQty,
     decreaseProductQty,
-    totalCartValue,
-    totalItemsInCart,
 } = useCart();
-
-// Filter items with quantity greater than 0
-const computedItemsOnCart = computed(() => {
-    console.log("Filter items with quantity greater than 0");
-    console.log(cart.value);
-    const filteredItems = cart.value.filter((item) => item.quantity > 0);
-    console.log(filteredItems);
-    return filteredItems;
-});
 
 // Watch the total cost and total items on cart
 const total = computed(() => totalCartValue.value);
 const totalItems = computed(() => totalItemsInCart.value);
+console.log("Cart items", cart.value);
 
 // Decrease quantity of an item
 function onDecreaseQuantity(item) {

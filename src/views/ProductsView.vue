@@ -7,9 +7,9 @@
                     @clicked-outside="showModal = false"
                 >
                     <ProductQuantitySelect
-                        :itemName="selectedItem.name"
-                        :itemImage="selectedItem.imageSrc"
-                        :itemQuantity="selectedItem.quantity"
+                        :name="selectedItem.name"
+                        :image="selectedItem.imageSrc"
+                        :quantity="selectedItem.quantity"
                         @confirm="onQuantitySelectorConfirm"
                         @cancel="showModal = false"
                     />
@@ -48,6 +48,7 @@
                                 :description="item.name"
                                 :price="item.price"
                                 :imageSrc="item.imageSrc"
+                                :quantity="getProductQty(item)"
                                 @add-to-cart="onAddToCart"
                             />
                         </GridContainer>
@@ -59,7 +60,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, toRaw } from "vue";
 import SidePanel from "@/components/SidePanel.vue";
 import ItemCard from "@/components/ItemCard.vue";
 import GridContainer from "@/components/GridContainer.vue";
@@ -71,18 +72,15 @@ import ProductQuantitySelect from "@/components/ProductQuantitySelect.vue";
 import ModalWindow from "@/components/ModalWindow.vue";
 
 // Modal controllers
-const showModal = ref(true);
+const showModal = ref(false);
 
 // Dummy selected item
-const selectedItem = ref({
-    name: "Product name",
-    imageSrc: "https://placehold.co/400x400/orange/white",
-    quantity: 4,
-});
+const selectedItem = ref({});
 
 // Cart composable
-const { totalCartValue, totalItemsInCart, updateProductQty /* addToCart */ } =
-    useCart();
+const cart = useCart();
+const { totalCartValue, totalItemsInCart } = cart;
+const { updateProductQty, getProductQty } = cart;
 
 // Computed properties for cart
 const totalItems = computed(() => totalItemsInCart.value);
@@ -121,19 +119,16 @@ const productList = computed(() => {
 });
 
 // Callbacks
-function onQuantitySelectorConfirm(payload) {
-    // Update the item's quantity
-    updateProductQty(
-        {
-            id: payload.id,
-            categoryId: payload.categoryId,
-            price: payload.price,
-            name: payload.name,
-        },
-        payload.quantity,
-    );
 
-    // Hide the modal
+// Update the item's quantity
+function onQuantitySelectorConfirm(payload) {
+    console.log("Update the item's quantity to", payload.quantity);
+    console.log(selectedItem.value);
+
+    // Update the item's quantity based on the modal's payload and the selected item
+    updateProductQty(toRaw(selectedItem.value), payload.quantity);
+
+    // Hide the Quantity selector modal
     showModal.value = false;
 }
 
@@ -141,16 +136,17 @@ function onAddToCart(payload) {
     console.log("Add to cart");
     console.log(payload);
 
-    console.log("Update product quantity");
-    updateProductQty(
-        {
-            id: payload.id,
-            categoryId: payload.categoryId,
-            price: payload.price,
-            name: payload.name,
-        },
-        payload.quantity,
-    );
+    // Update the selected item
+    selectedItem.value = {
+        id: payload.id,
+        categoryId: payload.categoryId,
+        price: payload.price,
+        name: payload.name,
+        imageSrc: payload.imageSrc || "https://placehold.co/400x400/red/white",
+    };
+
+    // Show the Quantity selector modal
+    showModal.value = true;
 }
 
 function onNavigateToCart() {
