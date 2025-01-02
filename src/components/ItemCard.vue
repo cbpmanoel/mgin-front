@@ -1,36 +1,19 @@
 <template>
-    <article class="item-card">
+    <div class="item-card">
         <!-- Product image: Occupies the whole width of the card and the upper part -->
-        <img :src="props.imageSrc" alt="Product image" class="image" />
+        <img :src="imageSrc" alt="Product image" class="image" />
         <div class="p-2">
             <!-- Product description and price -->
-            <h2 class="description">{{ props.description }}</h2>
-            <p class="price">${{ props.price.toFixed(2) }}</p>
+            <h2 class="description">{{ description }}</h2>
+            <p class="price">${{ price.toFixed(2) }}</p>
 
-            <!-- Quantity and quantity management buttons -->
-            <div class="quantity-container">
-                <CustomButton
-                    :color="'blue'"
-                    :class="`h-8 w-8`"
-                    :disabled="quantity === props.minQuantity"
-                    @click="decreaseQuantity"
-                >
-                    <object v-html="minusIco" v-once />
-                </CustomButton>
+            <!-- Quantity text -->
+            <p class="quantity-text">
+                <span v-show="quantity > 0">{{ quantity }} on cart</span>
+                <span v-show="quantity === 0">&nbsp;</span>
+            </p>
 
-                <span class="quantity-text">{{ quantity }}</span>
-
-                <CustomButton
-                    :color="'blue'"
-                    :class="`h-8 w-8`"
-                    :disabled="quantity === props.maxQuantity"
-                    @click="increaseQuantity"
-                >
-                    <object v-html="plusIco" v-once />
-                </CustomButton>
-            </div>
-
-            <!-- Add to cart button: Disabled if quantity is 0 -->
+            <!-- Add to cart button -->
             <div class="mt-2">
                 <CustomButton
                     :color="'green'"
@@ -43,17 +26,13 @@
                 </CustomButton>
             </div>
         </div>
-    </article>
+    </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import minusIco from "@/assets/minus.svg?raw";
-import plusIco from "@/assets/plus.svg?raw";
+import { toRefs } from "vue";
 import addToCartIco from "@/assets/addToCart.svg?raw";
 import CustomButton from "@/components/CustomButton.vue";
-
-const quantity = ref(0);
 
 const props = defineProps({
     id: {
@@ -76,53 +55,32 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    minQuantity: {
+    quantity: {
         type: Number,
-        default: 0,
-    },
-    maxQuantity: {
-        type: Number,
-        default: 10,
+        required: true,
     },
 });
 
+// Reactive variables from props
+const { description, price, imageSrc, quantity } = toRefs(props);
+
 const emit = defineEmits(["add-to-cart"]);
 
-const increaseQuantity = () => {
-    if (quantity.value < props.maxQuantity) {
-        quantity.value += 1;
-    }
-};
-
-const decreaseQuantity = () => {
-    if (quantity.value > props.minQuantity) {
-        quantity.value -= 1;
-    }
-};
-
 const addToCart = () => {
-    // Emit contains only the item ids and quantity
-    // The parent component will handle the rest
+    // Emit the add-to-cart event with the item details
     emit("add-to-cart", {
         id: props.id,
         categoryId: props.categoryId,
-
-        // Returning price just in case it changes in the future
         name: props.description,
         price: props.price,
-        quantity: quantity.value,
     });
-
-    // Reset the quantity to 0
-    //quantity.value = 0;
 };
 </script>
 
 <style scoped>
 /* Card background, shadow, and border radius */
 .item-card {
-    @apply bg-white shadow-md overflow-hidden min-w-48;
-    max-width: 300px;
+    @apply bg-white shadow-md overflow-hidden min-w-[200px] max-w-[300px];
 }
 
 /* Image styling - Covers the whole card width */
@@ -135,17 +93,8 @@ const addToCart = () => {
     @apply text-lg font-semibold;
 }
 
+.quantity-text,
 .price {
     @apply text-gray-500;
-}
-
-/* Quantity text */
-.quantity-text {
-    @apply text-gray-800 font-semibold;
-}
-
-/* Flex container for quantity and buttons */
-.quantity-container {
-    @apply flex items-center justify-between mt-4;
 }
 </style>
