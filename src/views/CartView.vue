@@ -84,8 +84,6 @@ import { computed } from "vue";
 import CustomButton from "@/components/CustomButton.vue";
 import ListContainer from "@/components/ListContainer.vue";
 import QuantitySelector from "@/components/QuantitySelector.vue";
-import minusIco from "@/assets/minus.svg?raw";
-import plusIco from "@/assets/plus.svg?raw";
 import removeFromCartIco from "@/assets/removeFromCart.svg?raw";
 import { useRouterNavigation } from "@/composables/useRouterNavigation";
 import LockIco from "@/assets/lock.svg?raw";
