@@ -1,38 +1,48 @@
 <template>
-    <div class="item-card">
-        <!-- Product image: Occupies the whole width of the card and the upper part -->
-        <img :src="imageSrc" alt="Product image" class="image" />
-        <div class="p-2">
-            <!-- Product description and price -->
-            <h2 class="description">{{ description }}</h2>
-            <p class="price">${{ price.toFixed(2) }}</p>
-
-            <!-- Quantity text -->
-            <p class="quantity-text">
-                <span v-show="quantity > 0">{{ quantity }} on cart</span>
-                <span v-show="quantity === 0">&nbsp;</span>
-            </p>
-
-            <!-- Add to cart button -->
-            <div class="mt-2">
-                <CustomButton
-                    :color="'green'"
-                    :class="`w-full p-2 font-semibold `"
-                    :content-align="`evenly`"
-                    @click="addToCart"
-                >
-                    <object v-html="addToCartIco" v-once />
-                    Add to cart
-                </CustomButton>
+    <Card class="card" unstyled>
+        <template #header>
+            <div class="card-header">
+                <img :src="imageSrc" alt="Product image" class="w-full" />
             </div>
-        </div>
-    </div>
+        </template>
+
+        <template #title>
+            <div class="card-title">
+                {{ description }}
+            </div>
+        </template>
+        <template #subtitle>
+            <div class="card-body">
+                <span v-if="quantity > 0">
+                    <span>{{ quantity }} on cart</span>
+                </span>
+                <span v-else>
+                    <span>&nbsp;</span>
+                </span>
+            </div>
+        </template>
+        <template #content>
+            <div class="card-body">
+                <p>${{ price.toFixed(2) }}</p>
+            </div>
+        </template>
+        <template #footer>
+            <div class="card-footer">
+                <Button
+                    @click="addToCart"
+                    label="Add to cart"
+                    icon="pi pi-shopping-cart"
+                    severity="info"
+                />
+            </div>
+        </template>
+    </Card>
 </template>
 
 <script setup>
 import { toRefs } from "vue";
-import addToCartIco from "@/assets/addToCart.svg?raw";
-import CustomButton from "@/components/CustomButton.vue";
+import Button from "primevue/button";
+import Card from "primevue/card";
 
 const props = defineProps({
     id: {
@@ -81,22 +91,19 @@ const addToCart = () => {
 
 <style scoped>
 /* Card background, shadow, and border radius */
-.item-card {
-    @apply bg-white shadow-md overflow-hidden min-w-[200px] max-w-[300px];
+.card {
+    @apply shadow-lg;
 }
-
-/* Image styling - Covers the whole card width */
-.image {
-    @apply object-cover w-full;
+.card-header {
+    @apply p-0;
 }
-
-/* Text styling */
-.description {
-    @apply text-lg font-semibold;
+.card-title {
+    @apply p-2 text-xl font-semibold;
 }
-
-.quantity-text,
-.price {
-    @apply text-gray-500;
+.card-body {
+    @apply ml-2 mr-2 text-gray-500;
+}
+.card-footer {
+    @apply p-2 flex flex-col;
 }
 </style>
