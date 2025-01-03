@@ -69,6 +69,7 @@
                     :color="'green'"
                     :class="'w-full p-2 font-semibold'"
                     :contentAlign="'evenly'"
+                    :disabled="totalItems === 0"
                     @click="onNavigateToCheckout"
                 >
                     <object v-html="LockIco" v-once />
