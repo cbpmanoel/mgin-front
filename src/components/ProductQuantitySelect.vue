@@ -1,75 +1,70 @@
 <template>
-    <!-- Modal content -->
-    <div class="component-container">
-        <!-- Product Image -->
-        <img
-            :src="image"
-            alt="Product Image"
-            class="max-h-[512px] max-w-[512px]"
-        />
-
-        <!-- Product Details -->
-        <div class="flex flex-col w-full gap-2 mt-4">
-            <div class="text-xl font-semibold cell-center">
-                <span>
-                    Select
-                    <span style="font-style: italic">{{ name }}</span
-                    >'s quantity:
-                </span>
-            </div>
-
-            <!-- Quantity control -->
-            <div class="w-full cell-center">
-                <QuantitySelector
-                    :quantity="mutableQuantity"
-                    :minusIco="minusIco"
-                    :plusIco="plusIco"
-                    :iconWidth="'w-10'"
-                    :iconHeight="'h-10'"
-                    @quantity-changed="onQuantityChanged"
+    <Dialog
+        v-model:visible="showModal"
+        :modal="true"
+        :closable="true"
+        :draggable="false"
+    >
+        <template #container>
+            <!-- Modal content -->
+            <div class="component-container">
+                <!-- Product Image -->
+                <img
+                    :src="image"
+                    alt="Product Image"
+                    class="max-h-[512px] max-w-[512px]"
                 />
-            </div>
 
-            <!-- Cancel, Remove and Confirm buttons -->
-            <div class="flex items-center w-full gap-1 justify-evenly h-[45px]">
-                <CustomButton
-                    :color="'gray'"
-                    class="min-w-[25%] p-2"
-                    @click="onCancel"
-                >
-                    Cancel
-                </CustomButton>
-                <!-- Remove button only appears when the item already is on the cart -->
-                <CustomButton
-                    v-if="quantityOnOpen > 0"
-                    class="min-w-[25%] p-2"
-                    :color="'red'"
-                    @click="onRemove"
-                >
-                    Remove
-                </CustomButton>
+                <!-- Product Details -->
+                <div class="flex flex-col w-full gap-2 mt-4">
+                    <div class="text-xl font-semibold cell-center">
+                        <span>
+                            Select
+                            <span style="font-style: italic">{{ name }}</span
+                            >'s quantity:
+                        </span>
+                    </div>
 
-                <CustomButton
-                    :color="'blue'"
-                    class="w-full p-2 font-semibold"
-                    :contentAlign="'evenly'"
-                    @click="onConfirm"
-                >
-                    <object v-html="addToCartIco" v-once />
-                    {{ confirmationButtonText }}
-                </CustomButton>
+                    <!-- Quantity control -->
+                    <div class="w-full cell-center">
+                        <QuantitySelector
+                            :quantity="mutableQuantity"
+                            :iconWidth="'w-10'"
+                            :iconHeight="'h-10'"
+                            @quantity-changed="onQuantityChanged"
+                        />
+                    </div>
+
+                    <!-- Cancel and Confirm buttons -->
+                    <div
+                        class="flex items-center w-full gap-1 justify-evenly h-[45px] mt-4"
+                    >
+                        <Button
+                            @click="onCancel"
+                            label="Cancel"
+                            severity="secondary"
+                        />
+
+                        <Button
+                            @click="onConfirm"
+                            :label="confirmationButtonText"
+                            icon="pi pi-cart-plus"
+                            iconPos="left"
+                            severity="success"
+                        />
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </Dialog>
 </template>
 
 <script setup>
 import { ref, toRefs, computed } from "vue";
-import CustomButton from "@/components/CustomButton.vue";
-import minusIco from "@/assets/minus.svg?raw";
-import plusIco from "@/assets/plus.svg?raw";
-import addToCartIco from "@/assets/addToCart.svg?raw";
 import QuantitySelector from "./QuantitySelector.vue";
+
+import Dialog from "primevue/dialog";
+import Button from "primevue/button";
 
 const props = defineProps({
     name: {
@@ -96,12 +91,17 @@ const props = defineProps({
         required: false,
         default: 10,
     },
+    showModal: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
 });
 
 // Initialize the item references
 const quantityOnOpen = ref(props.quantity); // Quantity when the modal was opened
 const mutableQuantity = ref(props.quantity); // Mutable quantity
-const { name, image } = toRefs(props);
+const { name, image, showModal } = toRefs(props);
 
 console.log("ProductQuantitySelect props");
 console.log(props);
@@ -119,11 +119,6 @@ const confirmationButtonText = computed(() => {
 const emit = defineEmits(["confirm", "cancel"]);
 
 // Callbacks
-// Pass quantity as 0 to remove the item
-const onRemove = () => {
-    console.log("Modal asked for remove");
-    emit("confirm", { quantity: 0 });
-};
 
 // Return the selected quantity
 const onConfirm = () => {
@@ -157,6 +152,6 @@ const onQuantityChanged = ({ quantity, action }) => {
 
 <style scoped>
 .component-container {
-    @apply flex flex-col justify-center items-center min-w-[400px];
+    @apply flex flex-col justify-evenly items-center p-2;
 }
 </style>

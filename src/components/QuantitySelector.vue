@@ -1,32 +1,29 @@
 <template>
     <div class="cell-center">
-        <CustomButton
-            :color="'blue'"
+        <Button
+            @click="onDecreaseQuantity"
+            icon="pi pi-minus"
             :class="iconClass"
             :disabled="quantity <= minQuantity"
-            @click="onDecreaseQuantity"
-        >
-            <object v-html="minusIco" v-once />
-        </CustomButton>
+            severity="info"
+            size="small"
+        />
         <div class="h-full font-semibold cell-center" :class="iconClass">
             {{ quantity }}
         </div>
-        <CustomButton
-            :color="'blue'"
+        <Button
+            @click="onIncreaseQuantity"
+            icon="pi pi-plus"
             :class="iconClass"
             :disabled="quantity >= maxQuantity"
-            @click="onIncreaseQuantity"
-        >
-            <object v-html="plusIco" v-once />
-        </CustomButton>
+            severity="info"
+        />
     </div>
 </template>
 
 <script setup>
 import { computed, defineProps, ref } from "vue";
-import plusIco from "@/assets/plus.svg?raw";
-import minusIco from "@/assets/minus.svg?raw";
-import CustomButton from "@/components/CustomButton.vue";
+import Button from "primevue/button";
 
 // Fake enum to actions
 const actions = {
