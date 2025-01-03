@@ -143,6 +143,7 @@ function onAddToCart(payload) {
         price: payload.price,
         name: payload.name,
         imageSrc: payload.imageSrc || "https://placehold.co/400x400/red/white",
+        quantity: payload.quantity,
     };
 
     // Show the Quantity selector modal
@@ -173,11 +174,10 @@ const scrollTo = (category) => {
 }
 
 /* Smooth fade + slight scale effect */
-.modal-enter-active,
 .modal-leave-active {
     transition: all 0.3s ease;
 }
-.modal-enter-from,
+
 .modal-leave-to {
     opacity: 0;
     transform: scale(0.95);

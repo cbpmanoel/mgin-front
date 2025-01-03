@@ -73,6 +73,8 @@ const addToCart = () => {
         categoryId: props.categoryId,
         name: props.description,
         price: props.price,
+        imageSrc: props.imageSrc,
+        quantity: props.quantity,
     });
 };
 </script>

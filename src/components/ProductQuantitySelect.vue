@@ -157,6 +157,6 @@ const onQuantityChanged = ({ quantity, action }) => {
 
 <style scoped>
 .component-container {
-    @apply flex flex-col justify-center items-center;
+    @apply flex flex-col justify-center items-center min-w-[400px];
 }
 </style>
