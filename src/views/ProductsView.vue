@@ -2,18 +2,14 @@
     <div>
         <transition name="modal">
             <div :key="showModal">
-                <ModalWindow
-                    v-if="showModal"
-                    @clicked-outside="showModal = false"
-                >
-                    <ProductQuantitySelect
-                        :name="selectedItem.name"
-                        :image="selectedItem.imageSrc"
-                        :quantity="selectedItem.quantity"
-                        @confirm="onQuantitySelectorConfirm"
-                        @cancel="showModal = false"
-                    />
-                </ModalWindow>
+                <ProductQuantitySelect
+                    :name="selectedItem.name"
+                    :image="selectedItem.imageSrc"
+                    :quantity="selectedItem.quantity"
+                    :showModal="showModal"
+                    @confirm="onQuantitySelectorConfirm"
+                    @cancel="showModal = false"
+                />
             </div>
         </transition>
         <!-- Side panel: Categories and Checkout area -->
@@ -50,6 +46,7 @@
                                 :imageSrc="item.imageSrc"
                                 :quantity="getProductQty(item)"
                                 @add-to-cart="onAddToCart"
+                                @remove-from-cart="onQuantitySelectorConfirm"
                             />
                         </GridContainer>
                     </div>
@@ -69,7 +66,6 @@ import { useRouterNavigation } from "@/composables/useRouterNavigation";
 import { useCategories } from "@/composables/useCategories";
 import { useProducts } from "@/composables/useProducts";
 import ProductQuantitySelect from "@/components/ProductQuantitySelect.vue";
-import ModalWindow from "@/components/ModalWindow.vue";
 
 // Modal controllers
 const showModal = ref(false);
