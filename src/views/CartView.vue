@@ -29,7 +29,7 @@
                             ${{ item.price.toFixed(2) }}
                         </div>
                         <!-- Column 3: Quantity -->
-                        <div class="cell-center">
+                        <div class="gap-1 cell-center">
                             <QuantitySelector
                                 :quantity="item.quantity"
                                 :minQuantity="1"
@@ -38,13 +38,13 @@
                                     onQuantityChanged(item, $event)
                                 "
                             />
-                            <CustomButton
-                                :color="'red'"
-                                :class="'w-8 h-8 ml-2'"
+                            <Button
                                 @click="onRemoveFromCart(item)"
-                            >
-                                <object v-html="removeFromCartIco" v-once />
-                            </CustomButton>
+                                icon="pi pi-trash"
+                                icon-pos="center"
+                                severity="danger"
+                                class="w-8 h-8 min-w-8 max-w-8"
+                            />
                         </div>
                         <!-- Column 4: Total price -->
                         <div class="cell-center-right">
@@ -65,16 +65,16 @@
                     <div class="font-semibold">Total:</div>
                     <div class="cell-center-right">${{ total.toFixed(2) }}</div>
                 </div>
-                <CustomButton
-                    :color="'green'"
-                    :class="'w-full p-2 font-semibold'"
-                    :contentAlign="'evenly'"
+
+                <!-- Proceed to checkout button -->
+                <Button
+                    :class="'w-full p-2 mb-2'"
                     :disabled="totalItems === 0"
                     @click="onNavigateToCheckout"
-                >
-                    <object v-html="LockIco" v-once />
-                    Proceed to Checkout
-                </CustomButton>
+                    label="Proceed to Checkout"
+                    icon="pi pi-lock"
+                    severity="success"
+                />
             </div>
         </div>
     </div>
@@ -82,13 +82,11 @@
 
 <script setup>
 import { computed } from "vue";
-import CustomButton from "@/components/CustomButton.vue";
 import ListContainer from "@/components/ListContainer.vue";
 import QuantitySelector from "@/components/QuantitySelector.vue";
-import removeFromCartIco from "@/assets/removeFromCart.svg?raw";
 import { useRouterNavigation } from "@/composables/useRouterNavigation";
-import LockIco from "@/assets/lock.svg?raw";
 import { useCart } from "@/composables/useCart";
+import Button from "primevue/button";
 
 // Router navigation composable
 const { navigateToCheckout } = useRouterNavigation();

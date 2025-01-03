@@ -6,7 +6,6 @@
             :class="iconClass"
             :disabled="quantity <= minQuantity"
             severity="info"
-            size="small"
         />
         <div class="h-full font-semibold cell-center" :class="iconClass">
             {{ quantity }}
@@ -63,7 +62,10 @@ const minQuantity = ref(props.minQuantity);
 const maxQuantity = ref(props.maxQuantity);
 
 // Icon size classes
-const iconClass = computed(() => `${props.iconWidth} ${props.iconHeight}`);
+const iconClass = computed(
+    () =>
+        `${props.iconWidth} ${props.iconHeight} min-${props.iconHeight} min-${props.iconWidth} max-${props.iconHeight} max-${props.iconWidth}`,
+);
 
 const onDecreaseQuantity = () => {
     if (quantity.value > minQuantity.value) {
