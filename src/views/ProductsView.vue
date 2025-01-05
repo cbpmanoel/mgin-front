@@ -32,10 +32,10 @@
             <div
                 ref="sidebar"
                 :class="[
-                    'absolute flex-shrink-0 w-64 transition-transform duration-300 ease-in-out',
+                    'absolute flex-shrink-0 w-80 transition-transform duration-300 ease-in-out',
                     { '-translate-x-full': !isSidebarVisible },
                     { 'z-40': isSidebarVisible },
-                    'sm:translate-x-0 sm:w-1/4',
+                    'sm:translate-x-0',
                 ]"
             >
                 <SidePanel
@@ -50,8 +50,8 @@
             <!-- Main content: Products separated by category -->
             <!-- Category ref is used to scroll to the category section -->
             <div
-                class="w-full mr-4 overflow-y-auto bg-gray-100 shadow-xl"
-                :class="['w-3/4 ml-4']"
+                class="w-full mx-4 overflow-y-auto bg-gray-100 shadow-xl"
+                :class="['sm:ml-[21rem] sm:w-[calc(100%-20rem)]']"
             >
                 <div
                     v-for="category in productList"
@@ -61,20 +61,27 @@
                 >
                     <div v-if="category.items.length > 0" class="mb-10">
                         <!-- Item cards -->
-                        <GridContainer :title="category.category">
-                            <ItemCard
-                                v-for="item in category.items"
-                                :key="item.id"
-                                :id="item.id"
-                                :categoryId="item.categoryId"
-                                :description="item.name"
-                                :price="item.price"
-                                :imageSrc="item.imageSrc"
-                                :quantity="getProductQty(item)"
-                                @add-to-cart="onAddToCartClicked"
-                                @remove-from-cart="onRemoveFromCartClicked"
-                            />
-                        </GridContainer>
+                        <FlexContainer>
+                            <template #header>
+                                <h2 class="text-2xl font-bold">
+                                    {{ category.category }}
+                                </h2>
+                            </template>
+                            <template #body>
+                                <ItemCard
+                                    v-for="item in category.items"
+                                    :key="item.id"
+                                    :id="item.id"
+                                    :categoryId="item.categoryId"
+                                    :description="item.name"
+                                    :price="item.price"
+                                    :imageSrc="item.imageSrc"
+                                    :quantity="getProductQty(item)"
+                                    @add-to-cart="onAddToCartClicked"
+                                    @remove-from-cart="onRemoveFromCartClicked"
+                                />
+                            </template>
+                        </FlexContainer>
                     </div>
                 </div>
             </div>
@@ -86,7 +93,7 @@
 import { computed, ref, toRaw } from "vue";
 import SidePanel from "@/components/SidePanel.vue";
 import ItemCard from "@/components/ItemCard.vue";
-import GridContainer from "@/components/GridContainer.vue";
+import FlexContainer from "@/components/FlexContainer.vue";
 import { useCart } from "@/composables/useCart";
 import { useRouterNavigation } from "@/composables/useRouterNavigation";
 import { useCategories } from "@/composables/useCategories";
