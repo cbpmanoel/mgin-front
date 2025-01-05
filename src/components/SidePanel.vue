@@ -4,29 +4,35 @@
             <!-- Category section -->
             <div class="sidepanel-container">
                 <div class="mb-4 sidepanel-title-area">
-                    <object v-html="categoryIco" v-once />
+                    <object v-html="categoryIco" v-once aria-hidden="true" />
                     <h2 class="text-2xl font-semibold">Categories</h2>
                 </div>
 
-                <!-- Category buttons are generated dynamically -->
+                <!-- Category buttons -->
                 <CustomButton
+                    v-for="category in props.categories"
+                    :key="category.id"
                     :color="'gray'"
                     :class="'w-full mb-2 p-2'"
                     @click="scrollTo(category.name)"
-                    v-for="category in props.categories"
-                    :key="category.id"
                 >
                     {{ category.name }}
                 </CustomButton>
+
+                <!-- Fallback for empty categories -->
+                <p v-if="!props.categories.length" class="text-gray-500">
+                    No categories available.
+                </p>
             </div>
 
             <!-- Order total section -->
             <div class="sidepanel-container">
-                <div class="mb-2 sidepanel-title-area">
-                    <object v-html="cartIco" v-once />
+                <div class="sidepanel-title-area">
+                    <object v-html="cartIco" v-once aria-hidden="true" />
                     <h2 class="text-2xl font-semibold">Order total</h2>
                 </div>
-                <div class="grid w-full grid-cols-2 grid-rows-2 gap-2 p-1 mb-2">
+
+                <div class="order-info-area">
                     <div class="text-lg font-semibold cell-center-left">
                         Items:
                     </div>
@@ -40,6 +46,7 @@
                         ${{ props.totalPrice.toFixed(2) }}
                     </div>
                 </div>
+
                 <CustomButton
                     :color="'green'"
                     :class="'w-full p-2'"
@@ -62,22 +69,26 @@ const props = defineProps({
     categories: {
         type: Array,
         required: true,
+        validator: (value) => {
+            return value.every((category) => category.id && category.name);
+        },
     },
     totalItems: {
         type: Number,
         required: true,
+        validator: (value) => value >= 0,
     },
     totalPrice: {
         type: Number,
         required: true,
+        validator: (value) => value >= 0,
     },
 });
 
-// Emit events to parent component
-const emit = defineEmits(["scroll-to", "navigate-to-cart"]);
+const emit = defineEmits(["scroll-to-category", "navigate-to-cart"]);
 
 const scrollTo = (category) => {
-    emit("scroll-to", category);
+    emit("scroll-to-category", category);
 };
 
 const navigateToCart = () => {
@@ -87,7 +98,6 @@ const navigateToCart = () => {
 
 <style scoped>
 .sidepanel {
-    /* Content is centered vertically, each element per row -  Width is fixed to 52rem */
     @apply bg-gray-100 text-black w-full h-full min-w-52;
 }
 
@@ -100,7 +110,7 @@ const navigateToCart = () => {
 }
 
 .sidepanel-title-area {
-    @apply flex items-center w-full justify-items-start gap-2;
+    @apply flex items-center w-full gap-2;
 }
 
 .order-info-area {
