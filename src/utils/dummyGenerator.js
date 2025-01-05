@@ -19,6 +19,7 @@ export function generateDummyData() {
             categoryList.push({
                 id: i + 1,
                 name: `Category ${i + 1}`,
+                imageSrc: "https://placehold.co/100x100/red/white",
             });
         }
         return categoryList;

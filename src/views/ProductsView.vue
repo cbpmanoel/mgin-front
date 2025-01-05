@@ -60,9 +60,10 @@
                         <!-- Item cards -->
                         <FlexContainer>
                             <template #header>
-                                <h2 class="text-2xl font-bold">
-                                    {{ category.category }}
-                                </h2>
+                                <CategoryHeader
+                                    :name="category.category"
+                                    :imageSrc="category.imageSrc"
+                                />
                             </template>
                             <template #body>
                                 <ItemCard
@@ -97,6 +98,7 @@ import { useCategories } from "@/composables/useCategories";
 import { useProducts } from "@/composables/useProducts";
 import ProductQuantitySelect from "@/components/ProductQuantitySelect.vue";
 import ModalWindow from "@/components/ModalWindow.vue";
+import CategoryHeader from "@/components/CategoryHeader.vue";
 
 // Modal controllers
 const showSelectItemQtyModal = ref(false);
@@ -144,6 +146,7 @@ const productList = computed(() => {
     return categories.value.map((cat) => {
         return {
             category: cat.name,
+            imageSrc: cat.imageSrc,
             items: dict[cat.id] || [],
         };
     });
