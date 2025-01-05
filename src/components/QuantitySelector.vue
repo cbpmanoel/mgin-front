@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { computed, defineProps, ref } from "vue";
+import { computed, ref } from "vue";
 import plusIco from "@/assets/plus.svg?raw";
 import minusIco from "@/assets/minus.svg?raw";
 import CustomButton from "@/components/CustomButton.vue";
