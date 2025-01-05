@@ -30,7 +30,7 @@
                 />
             </div>
 
-            <!-- Cancel, Remove and Confirm buttons -->
+            <!-- Cancel and Confirm buttons -->
             <div class="flex items-center w-full gap-1 justify-evenly h-[45px]">
                 <CustomButton
                     :color="'gray'"
@@ -38,15 +38,6 @@
                     @click="onCancel"
                 >
                     Cancel
-                </CustomButton>
-                <!-- Remove button only appears when the item already is on the cart -->
-                <CustomButton
-                    v-if="quantityOnOpen > 0"
-                    class="min-w-[25%] p-2"
-                    :color="'red'"
-                    @click="onRemove"
-                >
-                    Remove
                 </CustomButton>
 
                 <CustomButton
@@ -119,11 +110,6 @@ const confirmationButtonText = computed(() => {
 const emit = defineEmits(["confirm", "cancel"]);
 
 // Callbacks
-// Pass quantity as 0 to remove the item
-const onRemove = () => {
-    console.log("Modal asked for remove");
-    emit("confirm", { quantity: 0 });
-};
 
 // Return the selected quantity
 const onConfirm = () => {
@@ -157,6 +143,6 @@ const onQuantityChanged = ({ quantity, action }) => {
 
 <style scoped>
 .component-container {
-    @apply flex flex-col justify-center items-center min-w-[400px];
+    @apply flex flex-col justify-center items-center min-w-[360px];
 }
 </style>

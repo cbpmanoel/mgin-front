@@ -14,15 +14,24 @@
             </p>
 
             <!-- Add to cart button -->
-            <div class="mt-2">
+            <div class="card-footer">
                 <CustomButton
                     :color="'green'"
                     :class="`w-full p-2 font-semibold `"
                     :content-align="`evenly`"
-                    @click="addToCart"
+                    @click="onAddToCart"
                 >
                     <object v-html="addToCartIco" v-once />
                     Add to cart
+                </CustomButton>
+                <CustomButton
+                    v-if="quantity > 0"
+                    :color="'red'"
+                    :class="`w-10 p-2 font-semibold `"
+                    :content-align="`evenly`"
+                    @click="onRemoveFromCart"
+                >
+                    <object v-html="trashIco" v-once />
                 </CustomButton>
             </div>
         </div>
@@ -32,6 +41,7 @@
 <script setup>
 import { toRefs } from "vue";
 import addToCartIco from "@/assets/addToCart.svg?raw";
+import trashIco from "@/assets/trash.svg?raw";
 import CustomButton from "@/components/CustomButton.vue";
 
 const props = defineProps({
@@ -64,9 +74,9 @@ const props = defineProps({
 // Reactive variables from props
 const { description, price, imageSrc, quantity } = toRefs(props);
 
-const emit = defineEmits(["add-to-cart"]);
+const emit = defineEmits(["add-to-cart", "remove-from-cart"]);
 
-const addToCart = () => {
+const onAddToCart = () => {
     // Emit the add-to-cart event with the item details
     emit("add-to-cart", {
         id: props.id,
@@ -75,6 +85,18 @@ const addToCart = () => {
         price: props.price,
         imageSrc: props.imageSrc,
         quantity: props.quantity,
+    });
+};
+
+const onRemoveFromCart = () => {
+    // Emit the remove-from-cart event with the item details
+    emit("remove-from-cart", {
+        id: props.id,
+        categoryId: props.categoryId,
+        name: props.description,
+        price: props.price,
+        imageSrc: props.imageSrc,
+        quantity: 0,
     });
 };
 </script>
@@ -98,5 +120,9 @@ const addToCart = () => {
 .quantity-text,
 .price {
     @apply text-gray-500;
+}
+
+.card-footer {
+    @apply p-2 flex gap-1;
 }
 </style>
