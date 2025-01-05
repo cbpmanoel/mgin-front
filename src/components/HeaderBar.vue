@@ -52,7 +52,7 @@ const isSmallScreen = breakpoints.smaller("sm");
 
 // Define whether the left button should be shown
 const showLeftButton = computed(() => {
-    return currentRoute.value !== "products" && !isSmallScreen.value;
+    return currentRoute.value !== "Products";
 });
 </script>
 
@@ -62,7 +62,7 @@ const showLeftButton = computed(() => {
 }
 
 .headerbar-content {
-    @apply w-full h-full flex justify-end items-center p-4 gap-8;
+    @apply h-full flex justify-end items-center p-4 gap-8;
     @apply sm:justify-between;
 }
 

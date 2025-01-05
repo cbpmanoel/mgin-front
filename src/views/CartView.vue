@@ -1,12 +1,21 @@
 <template>
-    <div class="flex w-full p-4 screen-height">
-        <div class="w-3/4 p-2 overflow-y-auto bg-gray-100 shadow-xl">
+    <div class="flex flex-col w-full p-4 screen-height sm:flex-row">
+        <!-- Items List -->
+        <div
+            ref="items-list"
+            class="w-full p-2 overflow-y-auto bg-gray-100 shadow-xl sm:w-[calc(100%-20rem)]"
+        >
             <ListContainer>
                 <!-- Table Header -->
                 <div class="custom-list-item">
                     <div class="p-4 custom-list-item-content">
                         <div class="font-bold cell-center-left">Item</div>
-                        <div class="font-bold cell-center">Price</div>
+                        <div
+                            v-if="!isSmallScreen"
+                            class="font-bold cell-center"
+                        >
+                            Price
+                        </div>
                         <div class="font-bold cell-center">Quantity</div>
                         <div class="font-bold cell-center-right">Total</div>
                     </div>
@@ -25,7 +34,7 @@
                             {{ item.name }}
                         </div>
                         <!-- Column 2: Price -->
-                        <div class="cell-center">
+                        <div v-if="!isSmallScreen" class="cell-center">
                             ${{ item.price.toFixed(2) }}
                         </div>
                         <!-- Column 3: Quantity -->
@@ -43,7 +52,7 @@
                                 :class="'w-8 h-8 ml-2'"
                                 @click="onRemoveFromCart(item)"
                             >
-                                <object v-html="removeFromCartIco" v-once />
+                                <object v-html="trashIco" v-once />
                             </CustomButton>
                         </div>
                         <!-- Column 4: Total price -->
@@ -54,7 +63,12 @@
                 </div>
             </ListContainer>
         </div>
-        <div class="w-1/4 p-2 ml-4 bg-gray-100 shadow-xl">
+
+        <!-- Payment Overview -->
+        <div
+            ref="payment-overview"
+            class="w-full p-2 mt-4 bg-gray-100 shadow-xl sm:w-80 sm:ml-4 sm:mt-0"
+        >
             <div title="Order Summary">
                 <h2 class="p-1 mb-4 text-lg font-bold">Order Summary</h2>
                 <div class="grid w-full grid-cols-2 grid-rows-2 gap-2 p-1 mb-2">
@@ -85,10 +99,11 @@ import { computed } from "vue";
 import CustomButton from "@/components/CustomButton.vue";
 import ListContainer from "@/components/ListContainer.vue";
 import QuantitySelector from "@/components/QuantitySelector.vue";
-import removeFromCartIco from "@/assets/removeFromCart.svg?raw";
+import trashIco from "@/assets/trash.svg?raw";
 import { useRouterNavigation } from "@/composables/useRouterNavigation";
 import LockIco from "@/assets/lock.svg?raw";
 import { useCart } from "@/composables/useCart";
+import { useBreakpoints } from "@vueuse/core";
 
 // Router navigation composable
 const { navigateToCheckout } = useRouterNavigation();
@@ -133,6 +148,14 @@ function onRemoveFromCart(item) {
 function onNavigateToCheckout() {
     navigateToCheckout();
 }
+
+// Breakpoints
+const breakpoints = useBreakpoints({
+    sm: 640, // Tailwind's sm breakpoint
+});
+
+// Check if the screen size is sm or smaller
+const isSmallScreen = breakpoints.smaller("sm");
 </script>
 
 <style scoped>
