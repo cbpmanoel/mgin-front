@@ -19,10 +19,7 @@
         </transition>
 
         <!-- Toggle Button for Sidebar (Visible only on xs screens) -->
-        <button
-            @click="toggleSidebar"
-            class="fixed z-50 p-2 text-white bg-gray-800 rounded-lg shadow-lg top-4 left-4 sm:hidden"
-        >
+        <button @click="toggleSidebar" class="sidebar-button">
             {{ isSidebarVisible ? "Hide" : "Show" }} Menu
         </button>
 
@@ -210,5 +207,10 @@ const scrollTo = (category) => {
 .modal-leave-to {
     opacity: 0;
     transform: scale(0.95);
+}
+
+.sidebar-button {
+    @apply fixed z-50 p-2 text-white bg-gray-800 rounded-lg shadow-lg top-2 left-4 border border-gray-500 h-12;
+    @apply sm:hidden;
 }
 </style>
