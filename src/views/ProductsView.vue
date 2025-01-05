@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- Product quantity selection modal -->
         <transition name="modal">
             <div :key="showModal">
                 <ModalWindow
@@ -16,9 +17,26 @@
                 </ModalWindow>
             </div>
         </transition>
+
+        <!-- Toggle Button for Sidebar (Visible only on xs screens) -->
+        <button
+            @click="toggleSidebar"
+            class="fixed z-50 p-2 text-white bg-gray-800 rounded-lg shadow-lg top-4 left-4 sm:hidden"
+        >
+            {{ isSidebarVisible ? "Hide" : "Show" }} Sidebar
+        </button>
+
         <!-- Side panel: Categories and Checkout area -->
         <div class="flex w-full p-2 screen-height">
-            <div class="flex-shrink-0 w-1/4 min-w-0">
+            <!-- Sidebar (Hidden on xs screens by default) -->
+            <div
+                ref="sidebar"
+                :class="[
+                    'flex-shrink-0 w-1/4 min-w-0 transition-transform duration-300 ease-in-out',
+                    { '-translate-x-full': !isSidebarVisible },
+                    'sm:translate-x-0',
+                ]"
+            >
                 <SidePanel
                     :categories="categories"
                     :totalItems="totalItems"
@@ -73,9 +91,13 @@ import ModalWindow from "@/components/ModalWindow.vue";
 
 // Modal controllers
 const showModal = ref(false);
-
-// Dummy selected item
 const selectedItem = ref({});
+
+// Sidebar visibility
+const isSidebarVisible = ref(true);
+const toggleSidebar = () => {
+    isSidebarVisible.value = !isSidebarVisible.value;
+};
 
 // Cart composable
 const cart = useCart();
@@ -134,7 +156,6 @@ function onQuantitySelectorConfirm(payload) {
 
 function onAddToCart(payload) {
     console.log("Add to cart");
-    console.log(payload);
 
     // Update the selected item
     selectedItem.value = {
@@ -150,6 +171,7 @@ function onAddToCart(payload) {
     showModal.value = true;
 }
 
+// Navigate to the cart view
 function onNavigateToCart() {
     navigateToCart();
 }
