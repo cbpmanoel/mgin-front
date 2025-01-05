@@ -104,7 +104,8 @@ const onRemoveFromCart = () => {
 <style scoped>
 /* Card background, shadow, and border radius */
 .item-card {
-    @apply bg-white shadow-md overflow-hidden min-w-[200px] max-w-[300px];
+    @apply bg-white shadow-md overflow-hidden min-w-[18rem] max-w-[18rem] rounded-lg;
+    @apply sm:min-w-[20rem] sm:max-w-[20rem];
 }
 
 /* Image styling - Covers the whole card width */
