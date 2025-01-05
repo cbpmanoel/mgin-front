@@ -2,17 +2,17 @@
     <div>
         <!-- Product quantity selection modal -->
         <transition name="modal">
-            <div :key="showModal">
+            <div :key="showSelectItemQtyModal">
                 <ModalWindow
-                    v-if="showModal"
-                    @clicked-outside="showModal = false"
+                    v-if="showSelectItemQtyModal"
+                    @clicked-outside="showSelectItemQtyModal = false"
                 >
                     <ProductQuantitySelect
                         :name="selectedItem.name"
                         :image="selectedItem.imageSrc"
                         :quantity="selectedItem.quantity"
                         @confirm="onQuantitySelectorConfirm"
-                        @cancel="showModal = false"
+                        @cancel="showSelectItemQtyModal = false"
                     />
                 </ModalWindow>
             </div>
@@ -23,7 +23,7 @@
             @click="toggleSidebar"
             class="fixed z-50 p-2 text-white bg-gray-800 rounded-lg shadow-lg top-4 left-4 sm:hidden"
         >
-            {{ isSidebarVisible ? "Hide" : "Show" }} Sidebar
+            {{ isSidebarVisible ? "Hide" : "Show" }} Menu
         </button>
 
         <!-- Side panel: Categories and Checkout area -->
@@ -95,7 +95,7 @@ import ProductQuantitySelect from "@/components/ProductQuantitySelect.vue";
 import ModalWindow from "@/components/ModalWindow.vue";
 
 // Modal controllers
-const showModal = ref(false);
+const showSelectItemQtyModal = ref(false);
 const selectedItem = ref({});
 
 // Sidebar visibility
@@ -150,7 +150,7 @@ const productList = computed(() => {
 // Update the item's quantity
 function onQuantitySelectorConfirm(payload) {
     updateProductQty(toRaw(selectedItem.value), payload.quantity);
-    showModal.value = false;
+    showSelectItemQtyModal.value = false;
 }
 
 // Add item to cart
@@ -163,7 +163,7 @@ function onAddToCartClicked(payload) {
         imageSrc: payload.imageSrc || "https://placehold.co/400x400/red/white",
         quantity: payload.quantity,
     };
-    showModal.value = true;
+    showSelectItemQtyModal.value = true;
 }
 
 // Remove item from cart
