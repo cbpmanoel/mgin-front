@@ -32,23 +32,27 @@
             <div
                 ref="sidebar"
                 :class="[
-                    'flex-shrink-0 w-1/4 min-w-0 transition-transform duration-300 ease-in-out',
+                    'absolute flex-shrink-0 w-64 transition-transform duration-300 ease-in-out',
                     { '-translate-x-full': !isSidebarVisible },
-                    'sm:translate-x-0',
+                    { 'z-40': isSidebarVisible },
+                    'sm:translate-x-0 sm:w-1/4',
                 ]"
             >
                 <SidePanel
                     :categories="categories"
                     :totalItems="totalItems"
                     :totalPrice="totalPrice"
-                    @scroll-to="scrollTo"
+                    @scroll-to-category="scrollTo"
                     @navigate-to-cart="onNavigateToCart"
                 />
             </div>
 
             <!-- Main content: Products separated by category -->
             <!-- Category ref is used to scroll to the category section -->
-            <div class="w-3/4 ml-4 overflow-y-auto bg-gray-100 shadow-xl">
+            <div
+                class="w-full mr-4 overflow-y-auto bg-gray-100 shadow-xl"
+                :class="['w-3/4 ml-4']"
+            >
                 <div
                     v-for="category in productList"
                     :key="category.category"
@@ -67,7 +71,8 @@
                                 :price="item.price"
                                 :imageSrc="item.imageSrc"
                                 :quantity="getProductQty(item)"
-                                @add-to-cart="onAddToCart"
+                                @add-to-cart="onAddToCartClicked"
+                                @remove-from-cart="onRemoveFromCartClicked"
                             />
                         </GridContainer>
                     </div>
@@ -94,7 +99,7 @@ const showModal = ref(false);
 const selectedItem = ref({});
 
 // Sidebar visibility
-const isSidebarVisible = ref(true);
+const isSidebarVisible = ref(false); // Hidden by default on xs screens
 const toggleSidebar = () => {
     isSidebarVisible.value = !isSidebarVisible.value;
 };
@@ -144,20 +149,12 @@ const productList = computed(() => {
 
 // Update the item's quantity
 function onQuantitySelectorConfirm(payload) {
-    console.log("Update the item's quantity to", payload.quantity);
-    console.log(selectedItem.value);
-
-    // Update the item's quantity based on the modal's payload and the selected item
     updateProductQty(toRaw(selectedItem.value), payload.quantity);
-
-    // Hide the Quantity selector modal
     showModal.value = false;
 }
 
-function onAddToCart(payload) {
-    console.log("Add to cart");
-
-    // Update the selected item
+// Add item to cart
+function onAddToCartClicked(payload) {
     selectedItem.value = {
         id: payload.id,
         categoryId: payload.categoryId,
@@ -166,9 +163,12 @@ function onAddToCart(payload) {
         imageSrc: payload.imageSrc || "https://placehold.co/400x400/red/white",
         quantity: payload.quantity,
     };
-
-    // Show the Quantity selector modal
     showModal.value = true;
+}
+
+// Remove item from cart
+function onRemoveFromCartClicked() {
+    updateProductQty(toRaw(selectedItem.value), 0);
 }
 
 // Navigate to the cart view
