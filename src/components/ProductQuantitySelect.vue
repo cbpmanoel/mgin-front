@@ -5,7 +5,7 @@
         <img
             :src="image"
             alt="Product Image"
-            class="max-h-[512px] max-w-[512px]"
+            :class="['max-w-[20rem] max-h-[30rem]', 'sm:max-w-[30rem]']"
         />
 
         <!-- Product Details -->
@@ -113,7 +113,6 @@ const emit = defineEmits(["confirm", "cancel"]);
 
 // Return the selected quantity
 const onConfirm = () => {
-    console.log("Modal asked for update");
     emit("confirm", { quantity: mutableQuantity.value });
 };
 
