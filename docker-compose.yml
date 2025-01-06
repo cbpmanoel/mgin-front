@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+    # Frontend service
+    frontend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "5173:80"
+        container_name: kiosk-frontend
+        restart: unless-stopped
+        environment:
+            - VITE_API_BASE_URL=http://app:8000
+        networks:
+            - kiosk-network
+
+networks:
+    kiosk-network:
+        name: kiosk-network
