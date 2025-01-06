@@ -130,6 +130,6 @@ const onRemoveFromCart = () => {
 }
 
 .card-footer {
-    @apply p-2 flex gap-1;
+    @apply flex gap-1 pt-2;
 }
 </style>

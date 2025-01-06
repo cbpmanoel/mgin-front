@@ -36,7 +36,10 @@
             </div>
 
             <!-- Payment button -->
-            <div class="flex justify-center mt-4">
+            <div
+                v-if="paymentMethod === 'card'"
+                class="flex justify-center mt-4"
+            >
                 <CustomButton
                     color="green"
                     :class="'w-full max-w-md p-2 font-semibold gap-2'"
