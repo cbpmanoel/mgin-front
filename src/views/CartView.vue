@@ -23,14 +23,14 @@
 
                 <!-- Cart items -->
                 <div
-                    v-for="[itemKey, item] in cart"
-                    :key="itemKey"
+                    v-for="item in cart"
+                    :key="item.id"
                     class="custom-list-item"
                 >
                     <!-- Item details -->
                     <div class="p-4 custom-list-item-content">
                         <!-- Column 1: Item name -->
-                        <div class="text-xl font-semibold cell-center-left">
+                        <div class="font-semibold cell-center-left">
                             {{ item.name }}
                         </div>
                         <!-- Column 2: Price -->
@@ -41,15 +41,13 @@
                         <div class="cell-center">
                             <QuantitySelector
                                 :quantity="item.quantity"
-                                :minQuantity="1"
-                                :maxQuantity="10"
                                 @quantity-changed="
                                     onQuantityChanged(item, $event)
                                 "
                             />
                             <CustomButton
                                 :color="'red'"
-                                :class="'w-8 h-8 ml-2'"
+                                :class="'w-8 h-8 ml-1 sm:ml-2'"
                                 @click="onRemoveFromCart(item)"
                             >
                                 <object v-html="trashIco" v-once />
