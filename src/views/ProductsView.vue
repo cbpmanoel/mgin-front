@@ -70,10 +70,10 @@
                                     v-for="item in category.items"
                                     :key="item.id"
                                     :id="item.id"
-                                    :categoryId="item.categoryId"
+                                    :categoryId="item.category_id"
                                     :description="item.name"
                                     :price="item.price"
-                                    :imageSrc="item.imageSrc"
+                                    :imageSrc="item.image_id"
                                     :quantity="getProductQty(item)"
                                     @add-to-cart="onAddToCartClicked"
                                     @remove-from-cart="onRemoveFromCartClicked"
@@ -88,14 +88,14 @@
 </template>
 
 <script setup>
-import { computed, ref, toRaw } from "vue";
+import { computed, ref, toRaw, watch } from "vue";
 import SidePanel from "@/components/SidePanel.vue";
 import ItemCard from "@/components/ItemCard.vue";
 import FlexContainer from "@/components/FlexContainer.vue";
 import { useCart } from "@/composables/useCart";
 import { useRouterNavigation } from "@/composables/useRouterNavigation";
 import { useCategories } from "@/composables/useCategories";
-import { useProducts } from "@/composables/useProducts";
+import { useCategoryItems } from "@/composables/useCategoryItems";
 import ProductQuantitySelect from "@/components/ProductQuantitySelect.vue";
 import ModalWindow from "@/components/ModalWindow.vue";
 import CategoryHeader from "@/components/CategoryHeader.vue";
@@ -126,31 +126,61 @@ const { navigateToCart } = useRouterNavigation();
 const categoryRefs = ref({});
 
 // Categories and products composables
-const { categories } = useCategories();
-const { products } = useProducts();
+const {
+    categories,
+    // isLoading: categoriesLoading,
+    // error: categoriesError,
+    fetchCategories,
+} = useCategories();
+const {
+    categoryItems,
+    // isLoading: itemsLoading,
+    // error: itemsError,
+    fetchCategoryItems,
+} = useCategoryItems();
 
-// Group items by category
-const productList = computed(() => {
-    const dict = {};
+// Fetch categories when the component is mounted
+fetchCategories();
 
-    // Create a dictionary with category as key and items as value
-    products.value.forEach((item) => {
-        if (!dict[item.categoryId]) {
-            dict[item.categoryId] = [];
+// Watch for changes in categories and fetch items for each category
+const productList = ref([]);
+watch(
+    () => categories.value,
+    async (newCategories) => {
+        if (newCategories.length > 0) {
+            const itemsByCategory = [];
+
+            console.log(`Found ${newCategories.length} categories`);
+
+            // Fetch items for each category
+            for (const category of newCategories) {
+                await fetchCategoryItems(category.id);
+
+                if (!categoryItems.value[category.id]) {
+                    console.warn(
+                        `No items found for category: ${category.name}`,
+                    );
+                    continue;
+                }
+
+                itemsByCategory.push({
+                    category: category.name,
+                    imageSrc: category.image_id,
+                    items: categoryItems.value[category.id] || [],
+                });
+
+                // Print the last pushed category
+                console.log(
+                    "Last: ",
+                    itemsByCategory[itemsByCategory.length - 1],
+                );
+            }
+
+            productList.value = itemsByCategory;
         }
-
-        dict[item.categoryId].push(item);
-    });
-
-    // Convert the dictionary to an array of objects
-    return categories.value.map((cat) => {
-        return {
-            category: cat.name,
-            imageSrc: cat.imageSrc,
-            items: dict[cat.id] || [],
-        };
-    });
-});
+    },
+    { immediate: true },
+);
 
 // Callbacks
 
