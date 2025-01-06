@@ -18,15 +18,10 @@ export const useOrderBuilder = () => {
         if (payment.type === "card") {
             mappedPayment = {
                 type: payment.type,
-                // Calculate the total amount based on the items
-                amount: mappedItems.reduce(
-                    (total, item) =>
-                        total + item.price_at_order * item.quantity,
-                    0,
-                ),
+                amount: payment.amount,
                 card_number: payment.cardNumber,
-                card_holder: payment.cardHolder,
-                expiration_date: payment.expirationDate,
+                card_holder: payment.cardHolderName,
+                expiration_date: `${payment.expirationMonth}/${payment.expirationYear}`,
                 cvv: payment.cvv,
             };
         } else {
@@ -35,7 +30,7 @@ export const useOrderBuilder = () => {
 
         // Build the OrderModel structure
         const order = {
-            total: mappedPayment.amount,
+            total: payment.amount,
             created_at: new Date().toISOString(),
             items: mappedItems,
             payment: mappedPayment,
