@@ -241,8 +241,6 @@ function onQuantitySelectorConfirm(payload) {
 
 // Add item to cart
 function onAddToCartClicked(payload) {
-    console.log("Add to cart clicked", payload);
-
     selectedItem.value = {
         id: payload.id,
         categoryId: payload.categoryId,
