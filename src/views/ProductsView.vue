@@ -19,7 +19,7 @@
         </transition>
 
         <!-- Toggle Button for Sidebar (Visible only on xs screens) -->
-        <button @click="toggleSidebar" class="sidebar-button">
+        <button @click.stop="toggleSidebar" class="sidebar-button">
             {{ isSidebarVisible ? "< Hide" : "> Show" }} Menu
         </button>
 
@@ -28,6 +28,7 @@
             <!-- Sidebar (Hidden on xs screens by default) -->
             <div
                 ref="sidebar"
+                v-click-outside="closeSidebar"
                 :class="[
                     'absolute flex-shrink-0 w-80 transition-transform duration-300 ease-in-out',
                     { '-translate-x-full': !isSidebarVisible },
@@ -116,6 +117,12 @@ const selectedItem = ref({});
 const isSidebarVisible = ref(false); // Hidden by default on xs screens
 const toggleSidebar = () => {
     isSidebarVisible.value = !isSidebarVisible.value;
+};
+
+const closeSidebar = () => {
+    if (isSidebarVisible.value) {
+        isSidebarVisible.value = false;
+    }
 };
 
 // Cart composable
