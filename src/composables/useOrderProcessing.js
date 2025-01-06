@@ -21,18 +21,16 @@ export const useOrderProcessing = () => {
 
         for (let attempt = 0; attempt < retries; attempt++) {
             try {
-                const response = await api.post("/api/checkout", {
-                    orderObject
-                });
+                const response = await api.post('/order', orderObject);
 
                 // Validate the response status
                 if (response.status !== 200) {
                     throw new Error(
-                        `Failed to checkout: ${response.statusText}`,
+                        `Failed to process order: ${response.statusText}`,
                     );
                 }
 
-                console.log("Checkout successful", response.data);
+                console.log("Order processed successfully:");
 
                 // Exit the loop if the data is valid
                 break;
