@@ -1,14 +1,14 @@
 import { ref, computed } from "vue";
-// Cart Object
-const cart = ref(new Map());
+
+// Cart state
+const cart = ref({});
 
 export const useCart = () => {
     // Validate a product object
     function validateProduct(product) {
-        if (Number.isNaN(product.id) || Number.isNaN(product.categoryId)) {
+        if (!product.id) {
             throw new Error(
-                "Product must have an id and a categoryId: " +
-                    JSON.stringify(product),
+                "Product must have an id: " + JSON.stringify(product),
             );
         }
         if (Number.isNaN(product.price) || product.price <= 0) {
@@ -19,17 +19,12 @@ export const useCart = () => {
         }
     }
 
-    // Returns a unique identifier for a product based on its id and categoryId
-    function getProductUniqueId(product) {
-        return `${product.categoryId}-${product.id}`;
-    }
-
-    // Find a product in the cart
+    // Find a product in the cart by its ID
     function findProduct(product) {
-        return cart.value.get(getProductUniqueId(product));
+        return cart.value[product.id];
     }
 
-    // Create product object
+    // Create a product object with a default quantity of 1
     function createProduct(product, quantity = 1) {
         return {
             ...product,
@@ -44,19 +39,16 @@ export const useCart = () => {
 
     // Check if the cart contains a product
     const containsProduct = (product) => {
-        return cart.value.has(getProductUniqueId(product));
+        return !!cart.value[product.id];
     };
 
-    // Return how many of a product are in the cart
+    // Get the quantity of a product in the cart
     const getProductQty = (product) => {
         const existingProduct = findProduct(product);
-        if (existingProduct) {
-            return existingProduct.quantity;
-        }
-        return 0;
+        return existingProduct ? existingProduct.quantity : 0;
     };
 
-    // Remove the product from the cart
+    // Remove a product from the cart
     const removeFromCart = (product) => {
         updateProductQty(product, 0);
     };
@@ -92,32 +84,29 @@ export const useCart = () => {
 
         // If the quantity is 0 or negative, remove the product from the cart
         if (quantity <= 0) {
-            cart.value.delete(getProductUniqueId(product));
+            delete cart.value[product.id];
         }
         // If the product is not in the cart, add it
         else if (!existingProduct) {
-            cart.value.set(
-                getProductUniqueId(product),
-                createProduct(product, quantity),
-            );
+            cart.value[product.id] = createProduct(product, quantity);
         }
         // Otherwise, update the quantity of the product in the cart
         else {
-            cart.value.set(getProductUniqueId(product), {
+            cart.value[product.id] = {
                 ...existingProduct,
                 quantity,
-            });
+            };
         }
     };
 
     // Clear the cart
     const clearCart = () => {
-        cart.value.clear();
+        cart.value = {};
     };
 
     // Compute the total value of the cart
     const totalCartValue = computed(() => {
-        return Array.from(cart.value.values()).reduce(
+        return Object.values(cart.value).reduce(
             (total, product) => total + product.price * product.quantity,
             0,
         );
@@ -125,7 +114,7 @@ export const useCart = () => {
 
     // Compute the total number of items in the cart
     const totalItemsInCart = computed(() => {
-        return Array.from(cart.value.values()).reduce(
+        return Object.values(cart.value).reduce(
             (total, product) => total + product.quantity,
             0,
         );
