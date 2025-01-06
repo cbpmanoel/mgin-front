@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 
 const emit = defineEmits(["update-card-data", "update-card-errors"]);
 
@@ -141,29 +141,19 @@ watch([expirationMonth, expirationYear], () => {
 });
 
 // Form validation state
-const isFormValid = ref(false);
-
-// Validate form data
-const validateForm = () => {
-    try {
-        return (
-            !cardNumberError.value &&
-            !cardHolderNameError.value &&
-            !cvvError.value &&
-            !expirationDateError.value &&
-            cardNumber.value.trim() !== "" &&
-            cardHolderName.value.trim() !== "" &&
-            expirationMonth.value.trim() !== "" &&
-            expirationYear.value.trim() !== "" &&
-            cvv.value.trim() !== ""
-        );
-    }
-    // String input fields may throw an error if they are not strings
-    catch (error) {
-        console.error(error);
-        return false;
-    }
-};
+const isFormValid = computed (() => {
+    return (
+        !cardNumberError.value &&
+        !cardHolderNameError.value &&
+        !cvvError.value &&
+        !expirationDateError.value &&
+        cardNumber.value.trim() !== "" &&
+        cardHolderName.value.trim() !== "" &&
+        expirationMonth.value.trim() !== "" &&
+        expirationYear.value.trim() !== "" &&
+        cvv.value.trim() !== ""
+    );
+});
 
 // Emit form data to parent component
 const emitFormData = () => {
@@ -177,13 +167,13 @@ const emitFormData = () => {
     });
 };
 
-// Watch for changes in form data
+// Emit form data when the form validity changes
 watch(
-    [cardNumber, cardHolderName, expirationMonth, expirationYear, cvv],
+    isFormValid,
     () => {
-        isFormValid.value = validateForm();
         emitFormData();
-    }
+    },
+    { immediate: true },
 );
 </script>
 
