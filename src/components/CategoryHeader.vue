@@ -1,5 +1,5 @@
 <template>
-    <div class="category-item">
+    <div class="shadow-md category-item">
         <div class="image-container">
             <img :src="imageSrc" alt="Category Image" class="category-image" />
         </div>

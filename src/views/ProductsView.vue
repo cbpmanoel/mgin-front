@@ -243,6 +243,7 @@ function onQuantitySelectorConfirm(payload) {
     selectedItem.value.quantity = payload.quantity;
 
     showSelectItemQtyModal.value = false;
+    alert(`${selectedItem.value.name} added to cart`);
 }
 
 // Add item to cart
@@ -261,6 +262,7 @@ function onAddToCartClicked(payload) {
 // Remove item from cart
 function onRemoveFromCartClicked() {
     updateProductQty(toRaw(selectedItem.value), 0);
+    alert(`${selectedItem.value.name} removed from cart`);
 }
 
 // Navigate to the cart view
