@@ -80,10 +80,10 @@ const expirationYear = ref("");
 const cvv = ref("");
 
 // Error states
-const cardNumberError = ref(false);
-const cardHolderNameError = ref(false);
-const cvvError = ref(false);
-const expirationDateError = ref(false);
+const cardNumberError = ref(null);
+const cardHolderNameError = ref(null);
+const cvvError = ref(null);
+const expirationDateError = ref(null);
 
 // Months and years for expiration date
 const months = Array.from({ length: 12 }, (_, i) =>
@@ -143,10 +143,10 @@ watch([expirationMonth, expirationYear], () => {
 // Form validation state
 const isFormValid = computed (() => {
     return (
-        !cardNumberError.value &&
-        !cardHolderNameError.value &&
-        !cvvError.value &&
-        !expirationDateError.value &&
+        cardNumberError.value === false &&
+        cardHolderNameError.value === false &&
+        cvvError.value === false &&
+        expirationDateError.value === false &&
         cardNumber.value.trim() !== "" &&
         cardHolderName.value.trim() !== "" &&
         expirationMonth.value.trim() !== "" &&
