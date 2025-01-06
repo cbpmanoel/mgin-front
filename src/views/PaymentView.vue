@@ -44,11 +44,11 @@
                     color="green"
                     :class="'w-full max-w-md p-2 font-semibold gap-2'"
                     :contentAlign="'center'"
-                    :disabled="totalCartValue <= 0 || !isPaymentDataValid"
+                    :disabled="disablePaymentButton"
                     @click="onPay"
                 >
                     <object v-html="LockIcon" v-once />
-                    Pay - ${{ totalCartValue.toFixed(2) }}
+                    {{ paymentButtonText }}
                 </CustomButton>
             </div>
         </div>
@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import CardPaymentArea from "@/components/CardPaymentArea.vue";
 import CustomButton from "@/components/CustomButton.vue";
 import LockIcon from "@/assets/lock.svg?raw";
@@ -69,7 +69,8 @@ import { useOrderBuilder } from "@/composables/useOrderBuilder";
 const { totalCartValue, clearCart, getProductsOnCart } = useCart();
 
 // Checkout composable
-const { processOrder, error: checkoutError } = useOrderProcessing();
+const { processOrder, error: checkoutError, isLoading: isProcessingOrder } =
+    useOrderProcessing();
 
 // Router navigation composable
 const { navigateToProducts } = useRouterNavigation();
@@ -80,6 +81,12 @@ const paymentMethod = ref("card");
 // Check if the payment data is valid
 const isPaymentDataValid = ref(false);
 const paymentData = ref({});
+
+// Disable payment button if the cart is empty, the payment data is invalid, or the order is being processed
+const disablePaymentButton = computed(() => totalCartValue.value <= 0 || !isPaymentDataValid.value || isProcessingOrder.value);
+
+// PaymentButton text
+const paymentButtonText = computed(() => isProcessingOrder.value ? "Processing..." : `Pay - $${totalCartValue.value.toFixed(2)}`);
 
 // Order Builder
 const { buildOrder } = useOrderBuilder();
