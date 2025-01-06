@@ -13,8 +13,6 @@
     "dependencies": {
         "@vueuse/core": "^12.3.0",
         "axios": "^1.7.9",
-        "pinia": "^2.3.0",
-        "pinia-plugin-persistedstate": "^4.2.0",
         "tailwind-variants": "^0.3.0",
         "vite-svg-loader": "^5.1.0",
         "vue": "^3.5.13",
