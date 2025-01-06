@@ -1,0 +1,191 @@
+<template>
+    <!-- Card payment area -->
+    <div class="card-payment">
+        <!-- Card number with validation and spaces each 4 numbers -->
+        <div class="mb-2">
+            <input
+                type="text"
+                v-model="cardNumber"
+                @input="formatCardNumber"
+                class="input"
+                placeholder="Card number"
+                maxlength="19"
+            />
+            <span v-if="cardNumberError" class="text-sm text-red-500"
+                >Invalid card number</span
+            >
+        </div>
+
+        <!-- Card holder name -->
+        <div class="mb-2">
+            <input
+                type="text"
+                v-model="cardHolderName"
+                @input="validateCardHolderName"
+                class="input"
+                placeholder="Card holder name"
+            />
+            <span v-if="cardHolderNameError" class="text-sm text-red-500">
+                Invalid card holder name</span
+            >
+        </div>
+
+        <!-- Card expiration date, two dropdowns from current month and year to 10 years -->
+        <div class="mb-2">
+            <div class="flex gap-2">
+                <select v-model="expirationMonth" class="input">
+                    <option v-for="month in months" :key="month" :value="month">
+                        {{ month }}
+                    </option>
+                </select>
+
+                <select v-model="expirationYear" class="input">
+                    <option v-for="year in years" :key="year" :value="year">
+                        {{ year }}
+                    </option>
+                </select>
+            </div>
+            <span v-if="expirationDateError" class="text-sm text-red-500">
+                Invalid expiration date</span
+            >
+        </div>
+
+        <!-- CVV -->
+        <div class="mb-2">
+            <input
+                type="text"
+                v-model="cvv"
+                @input="validateCVV"
+                class="input"
+                placeholder="CVV"
+                maxlength="4"
+            />
+            <span v-if="cvvError" class="text-sm text-red-500"
+                >Invalid CVV</span
+            >
+        </div>
+    </div>
+</template>
+
+<script setup>
+import { ref, watch, computed } from "vue";
+
+const emit = defineEmits(["update-card-data", "update-card-errors"]);
+
+// State
+const cardNumber = ref("");
+const cardHolderName = ref("");
+const expirationMonth = ref("");
+const expirationYear = ref("");
+const cvv = ref("");
+
+// Error states
+const cardNumberError = ref(false);
+const cardHolderNameError = ref(false);
+const cvvError = ref(false);
+const expirationDateError = ref(false);
+
+// Months and years for expiration date
+const months = Array.from({ length: 12 }, (_, i) =>
+    String(i + 1).padStart(2, "0"),
+);
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: 10 }, (_, i) => String(currentYear + i));
+
+// Card number validation and formatting
+const formatCardNumber = () => {
+    // Remove non-numeric characters
+    cardNumber.value = cardNumber.value.replace(/\D/g, "");
+
+    // Add spaces every 4 digits
+    cardNumber.value = cardNumber.value.replace(/(\d{4})(?=\d)/g, "$1 ");
+
+    // Validate card number length (16 digits)
+    cardNumberError.value = cardNumber.value.replace(/\s/g, "").length !== 16;
+};
+
+// Card holder name validation
+const validateCardHolderName = () => {
+    // Remove non-alphabetic characters
+    cardHolderName.value = cardHolderName.value.replace(/[^a-zA-Z\s]/g, "");
+
+    // Put all characters in uppercase
+    cardHolderName.value = cardHolderName.value.toUpperCase();
+
+    // Validate card holder name length (at least 3 characters)
+    cardHolderNameError.value = cardHolderName.value.length < 3;
+};
+
+// CVV validation
+const validateCVV = () => {
+    // Remove non-numeric characters
+    cvv.value = cvv.value.replace(/\D/g, "");
+
+    // Validate CVV length (3 or 4 digits)
+    cvvError.value = !/^\d{3,4}$/.test(cvv.value);
+};
+
+// Watch for changes in expiration month and year
+watch([expirationMonth, expirationYear], () => {
+    if (expirationMonth.value && expirationYear.value) {
+        const currentDate = new Date();
+
+        // Create a date object with the selected month and year, and day 1
+        const selectedDate = new Date(
+            `${expirationYear.value}-${expirationMonth.value}-01`,
+        );
+
+        // Check if the selected date is in the past
+        expirationDateError.value = selectedDate < currentDate;
+    }
+});
+
+// Check if all fields are valid
+const isFormValid = computed(() => {
+    return (
+        !cardNumberError.value &&
+        !cardHolderNameError.value &&
+        !cvvError.value &&
+        !expirationDateError.value &&
+        cardNumber.value &&
+        cardHolderName.value &&
+        expirationMonth.value &&
+        expirationYear.value &&
+        cvv.value
+    );
+});
+
+// Watch for changes in all fields and emit data when valid, or errors when invalid
+watch(
+    [cardNumber, cardHolderName, expirationMonth, expirationYear, cvv],
+    () => {
+        if (isFormValid.value) {
+            emit("update-card-data", {
+                cardNumber: cardNumber.value.replace(/\s/g, ""), // Remove spaces
+                cardHolderName: cardHolderName.value,
+                expirationMonth: expirationMonth.value,
+                expirationYear: expirationYear.value,
+                cvv: cvv.value,
+            });
+        } else {
+            emit("update-card-errors", {
+                cardNumber: cardNumberError.value,
+                cardHolderName: cardHolderNameError.value,
+                expirationDate: expirationDateError.value,
+                cvv: cvvError.value,
+            });
+        }
+    },
+    { deep: true },
+);
+</script>
+
+<style scoped>
+.card-payment {
+    @apply max-w-md mx-auto p-6 bg-white rounded-lg shadow-md;
+}
+
+.input {
+    @apply w-full py-2 pl-3 pr-10 mt-1 text-base border border-gray-300 rounded-md sm:text-sm;
+}
+</style>
