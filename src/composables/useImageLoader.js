@@ -1,9 +1,24 @@
-import { ref, onUnmounted } from "vue";
+import { ref } from "vue";
 import api from "../utils/api";
 
 // State
 const imageCache = ref({});
 const error = ref(null);
+
+// Global cleanup function
+const cleanupBlobUrls = () => {
+    for (const imageId in imageCache.value) {
+        const cached = imageCache.value[imageId];
+        if (cached?.url) {
+            URL.revokeObjectURL(cached.url);
+        }
+    }
+    imageCache.value = {};
+};
+
+// Cleanup blob URLs when the app is closed
+window.addEventListener("beforeunload", cleanupBlobUrls);
+
 
 export const useImageLoader = () => {
     // Load an image from the server
@@ -68,15 +83,6 @@ export const useImageLoader = () => {
         imageCache.value[imageId] = { isLoading: false, url: null };
         return null;
     };
-
-    onUnmounted(() => {
-        for (const imageId in imageCache.value) {
-            const cached = imageCache.value[imageId];
-            if (cached?.url) {
-                URL.revokeObjectURL(cached.url);
-            }
-        }
-    });
 
     return { loadImage, error };
 };
