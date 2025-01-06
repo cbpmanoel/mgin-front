@@ -39,7 +39,7 @@
             <div class="flex justify-center mt-4">
                 <CustomButton
                     color="green"
-                    :class="'w-full p-2 font-semibold gap-2'"
+                    :class="'w-full max-w-md p-2 font-semibold gap-2'"
                     :contentAlign="'center'"
                     :disabled="totalCartValue <= 0 || !isPaymentDataValid"
                     @click="onPay"
