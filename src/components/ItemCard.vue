@@ -9,11 +9,15 @@
 
             <!-- Quantity text -->
             <p class="quantity-text">
-                <span v-show="quantity > 0">{{ quantity }} on cart</span>
-                <span v-show="quantity === 0">&nbsp;</span>
+                <span v-if="quantity > 0">
+                    <span>{{ quantity }} on cart</span>
+                </span>
+                <span v-else>
+                    <span>&nbsp;</span>
+                </span>
             </p>
 
-            <!-- Add to cart button -->
+            <!-- Add to cart button opens the product quantity selector -->
             <div class="card-footer">
                 <CustomButton
                     :color="'green'"
@@ -22,8 +26,10 @@
                     @click="onAddToCart"
                 >
                     <object v-html="addToCartIco" v-once />
-                    Add to cart
+                    {{ quantity > 0 ? "Update cart" : "Add to cart" }}
                 </CustomButton>
+
+                <!-- Remove from cart button appears only if the quantity is greater than 0 -->
                 <CustomButton
                     v-if="quantity > 0"
                     :color="'red'"
