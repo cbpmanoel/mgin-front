@@ -1,10 +1,80 @@
 <template>
-    <div>
-        <h1>Payment</h1>
-        <p>Payment details</p>
+    <div
+        class="flex flex-col items-center justify-center h-screen screen-height"
+    >
+        <div
+            class="w-[90%] h-full mx-4 overflow-y-auto bg-gray-100 shadow-xl p-4"
+        >
+            <!-- Dropdown to select if the payment method is by card or PIX -->
+            <div class="flex justify-center mt-4">
+                <div class="w-full max-w-md">
+                    <label
+                        for="payment-method"
+                        class="text-sm font-medium text-gray-700 rounded-md"
+                        >Payment method</label
+                    >
+                    <select
+                        id="payment-method"
+                        v-model="paymentMethod"
+                        name="payment-method"
+                        class="w-full p-2 mt-1 text-base border border-gray-300 rounded-md sm:text-sm"
+                    >
+                        <option value="card">Credit Card</option>
+                        <option value="pix">PIX</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Card payment -->
+            <div v-if="paymentMethod === 'card'" class="mt-4">
+                <CardPaymentArea />
+            </div>
+
+            <!-- PIX payment -->
+            <div v-else-if="paymentMethod === 'pix'" class="mt-4">
+                Unavailable
+            </div>
+
+            <!-- Payment button -->
+            <div class="flex justify-center mt-4">
+                <CustomButton
+                    color="green"
+                    :class="'w-full p-2 font-semibold gap-2'"
+                    :contentAlign="'center'"
+                    :disabled="totalCartValue <= 0"
+                    @click="onPay"
+                >
+                    <object v-html="LockIcon" v-once />
+                    Pay - ${{ totalCartValue.toFixed(2) }}
+                </CustomButton>
+            </div>
+        </div>
     </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, computed } from "vue";
+import CardPaymentArea from "@/components/CardPaymentArea.vue";
+import CustomButton from "@/components/CustomButton.vue";
+import LockIcon from "@/assets/lock.svg?raw";
+import { useCart } from "@/composables/useCart";
 
-<style scoped></style>
+// Cart composable
+const { totalCartValue, cart, clearCart } = useCart();
+
+// Get the payment method from the dropdown
+const paymentMethod = ref("card");
+
+// Payment function
+const onPay = () => {
+    if (paymentMethod.value === "card") {
+        console.log("Card payment");
+    } else if (paymentMethod.value === "pix") {
+        console.log("PIX payment");
+    }
+};
+</script>
+
+<style scoped>
+/* Add custom styles if needed */
+</style>
