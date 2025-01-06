@@ -94,9 +94,6 @@ const quantityOnOpen = ref(props.quantity); // Quantity when the modal was opene
 const mutableQuantity = ref(props.quantity); // Mutable quantity
 const { name, image } = toRefs(props);
 
-console.log("ProductQuantitySelect props");
-console.log(props);
-
 // Compute the confirm's button text the explicitly show
 // that the quantity will be changed if the item is already
 // on the cart.
@@ -128,15 +125,11 @@ const onQuantityChanged = ({ quantity, action }) => {
     switch (action) {
         case "increase":
             mutableQuantity.value++;
-            console.log("increased");
             break;
         case "decrease":
             mutableQuantity.value--;
-            console.log("decrease");
             break;
     }
-
-    console.log("New  qty: ", mutableQuantity.value);
 };
 </script>
 
