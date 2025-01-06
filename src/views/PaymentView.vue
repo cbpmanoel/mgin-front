@@ -58,9 +58,17 @@ import CardPaymentArea from "@/components/CardPaymentArea.vue";
 import CustomButton from "@/components/CustomButton.vue";
 import LockIcon from "@/assets/lock.svg?raw";
 import { useCart } from "@/composables/useCart";
+import { useCheckout } from "@/composables/useCheckout";
+import { useRouterNavigation } from "@/composables/useRouterNavigation";
 
 // Cart composable
 const { totalCartValue, cart, clearCart } = useCart();
+
+// Checkout composable
+const { checkout, error: checkoutError } = useCheckout();
+
+// Router navigation composable
+const { navigateToProducts } = useRouterNavigation();
 
 // Get the payment method from the dropdown
 const paymentMethod = ref("card");
@@ -68,18 +76,34 @@ const paymentMethod = ref("card");
 // Check if the payment data is valid
 const isPaymentDataValid = ref(false);
 
+const paymentData = ref({});
+
 // Update card data
 const onUpdateCardData = (data) => {
+    paymentData.value = data;
+    paymentData.value.amount = totalCartValue.value;
+    paymentData.value.type = "card";
+
+    console.log("Payment data", paymentData.value);
+
     isPaymentDataValid.value = data.valid || false;
     console.log("Validation is", isPaymentDataValid.value);
 };
 
 // Payment function
-const onPay = () => {
+const onPay = async () => {
     if (paymentMethod.value === "card") {
-        console.log("Card payment");
+        await checkout(cart.value, paymentData.value);
+
+        if (!checkoutError.value) {
+            alert("Payment successful!");
+            clearCart();
+            await navigateToProducts();
+        } else {
+            alert("Payment failed. Please try again.");
+        }
     } else if (paymentMethod.value === "pix") {
-        console.log("PIX payment");
+        console.log("Currently unavailable");
     }
 };
 </script>
