@@ -35,6 +35,11 @@ export const useCart = () => {
     // Initialize the cart from localStorage
     loadCartFromLocalStorage();
 
+    // Get all products in the cart
+    const getProductsOnCart = () => {
+        return Object.values(cart.value);
+    };
+
     // Validate a product object
     function validateProduct(product) {
         if (!product.id) {
@@ -164,6 +169,7 @@ export const useCart = () => {
         cart,
 
         // methods
+        getProductsOnCart,
         addToCart,
         removeFromCart,
         increaseProductQty,
