@@ -30,7 +30,7 @@ export const useImageLoader = () => {
         for (let attempt = 0; attempt < retries; attempt++) {
             try {
                 // Create the endpoint URL for the image
-                const endpoint = `images/${imageId}.jpg`;
+                const endpoint = `image/${imageId}.jpg`;
 
                 // Fetch the image from the server
                 const response = await api.get(endpoint, {
