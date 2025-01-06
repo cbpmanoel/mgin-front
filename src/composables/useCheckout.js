@@ -6,8 +6,7 @@ export const useCheckout = () => {
     const error = ref(null);
 
     const checkout = async (
-        cartItems,
-        paymentMethod,
+        orderObject,
         retries = 3,
         delay = 1000,
     ) => {
@@ -20,11 +19,12 @@ export const useCheckout = () => {
         isLoading.value = true;
         error.value = null;
 
+
+
         for (let attempt = 0; attempt < retries; attempt++) {
             try {
                 const response = await api.post("/api/checkout", {
-                    cartItems,
-                    paymentMethod,
+                    orderObject
                 });
 
                 // Validate the response status
