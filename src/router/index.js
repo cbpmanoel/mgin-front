@@ -5,18 +5,21 @@ const router = createRouter({
     routes: [
         {
             path: "/",
-            name: "Products",
+            name: "home",
             component: () => import("@/views/ProductsView.vue"),
+            meta: { title: "Products" },
         },
         {
             path: "/cart",
-            name: "Your Cart",
+            name: "cart",
             component: () => import("@/views/CartView.vue"),
+            meta: { title: "Your Cart" },
         },
         {
             path: "/checkout",
-            name: "Checkout",
+            name: "checkout",
             component: () => import("@/views/PaymentView.vue"),
+            meta: { title: "Checkout" },
         },
     ],
 });
