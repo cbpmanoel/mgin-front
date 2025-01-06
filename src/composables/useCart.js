@@ -1,19 +1,16 @@
 import { ref, computed } from "vue";
+import runWithDebounce from "@/utils/runWithDebounce";
 
 // Key for localStorage
 const CART_STORAGE_KEY = "cart_v1";
 
-// Save cart to localStorage, debounced to prevent excessive writes. Debounce time is 500ms.
-let saveTimeout;
+// Save cart to localStorage
 function saveCartToLocalStorage() {
-    if (saveTimeout) clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => {
-        try {
-            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart.value));
-        } catch (error) {
-            console.error("Failed to save cart to localStorage:", error);
-        }
-    }, 500);
+    try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart.value));
+    } catch (error) {
+        console.error("Failed to save cart to localStorage:", error);
+    }
 }
 
 // Load cart from localStorage
@@ -137,15 +134,17 @@ export const useCart = () => {
         }
 
         // Save the updated cart to localStorage
-        saveCartToLocalStorage();
+        runWithDebounce(saveCartToLocalStorage)();
     };
 
     // Clear the cart
     const clearCart = () => {
+        console.log("Clearing cart");
         cart.value = {};
 
         // Save the cleared cart to localStorage
         saveCartToLocalStorage();
+        console.log("Cart cleared:", cart.value);
     };
 
     // Compute the total value of the cart
