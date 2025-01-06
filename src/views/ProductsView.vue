@@ -62,7 +62,10 @@
                             <template #header>
                                 <CategoryHeader
                                     :name="category.category"
-                                    :imageSrc="category.imageSrc"
+                                    :imageSrc="
+                                        imageUrl[category.imageSrc] ||
+                                        noImageFound
+                                    "
                                 />
                             </template>
                             <template #body>
@@ -73,7 +76,10 @@
                                     :categoryId="item.category_id"
                                     :description="item.name"
                                     :price="item.price"
-                                    :imageSrc="item.image_id"
+                                    :imageSrc="
+                                        imageUrl[category.imageSrc] ||
+                                        noImageFound
+                                    "
                                     :quantity="getProductQty(item)"
                                     @add-to-cart="onAddToCartClicked"
                                     @remove-from-cart="onRemoveFromCartClicked"
@@ -99,6 +105,8 @@ import { useCategoryItems } from "@/composables/useCategoryItems";
 import ProductQuantitySelect from "@/components/ProductQuantitySelect.vue";
 import ModalWindow from "@/components/ModalWindow.vue";
 import CategoryHeader from "@/components/CategoryHeader.vue";
+import { useImageLoader } from "@/composables/useImageLoader";
+import noImageFound from "@/assets/no-image-found.jpg";
 
 // Modal controllers
 const showSelectItemQtyModal = ref(false);
@@ -168,18 +176,57 @@ watch(
                     imageSrc: category.image_id,
                     items: categoryItems.value[category.id] || [],
                 });
-
-                // Print the last pushed category
-                console.log(
-                    "Last: ",
-                    itemsByCategory[itemsByCategory.length - 1],
-                );
             }
 
             productList.value = itemsByCategory;
         }
     },
     { immediate: true },
+);
+
+// Image Loader composable
+const { loadImage } = useImageLoader();
+const imageUrl = ref({});
+
+// Preload images for all categories and items
+const preloadImages = async () => {
+    for (const category of productList.value) {
+        // Preload category image
+        const categoryImageId = category.imageSrc;
+        if (!imageUrl.value[categoryImageId]) {
+            try {
+                const url = await loadImage(categoryImageId);
+                imageUrl.value[categoryImageId] = url;
+            } catch (error) {
+                console.error("Failed to load category image", error);
+                imageUrl.value[categoryImageId] = noImageFound; // Fallback to placeholder
+            }
+        }
+
+        // Preload item images
+        for (const item of category.items) {
+            const itemImageId = item.image_id;
+            if (!imageUrl.value[itemImageId]) {
+                try {
+                    const url = await loadImage(itemImageId);
+                    imageUrl.value[itemImageId] = url;
+                } catch (error) {
+                    console.error("Failed to load item image", error);
+                    imageUrl.value[itemImageId] = noImageFound; // Fallback to placeholder
+                }
+            }
+        }
+    }
+};
+
+watch(
+    () => productList.value,
+    async (newProductList) => {
+        if (newProductList.length > 0) {
+            await preloadImages();
+        }
+    },
+    { immediate: true, deep: true },
 );
 
 // Callbacks
