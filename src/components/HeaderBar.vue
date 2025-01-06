@@ -1,27 +1,35 @@
 <template>
     <div class="headerbar">
-        <div class="headerbar-content">
-            <button
+        <div
+            class="headerbar-content"
+            :class="[showLeftButton ? 'justify-between' : 'justify-end']"
+        >
+            <CustomButton
                 v-if="showLeftButton"
-                class="headerbar-btn-left"
-                @click="navigateToProducts"
+                :color="'gray'"
+                :class="'headerbar-btn'"
+                @click="goToProducts"
             >
                 <object v-html="categoryIcon" v-once />
-                <div class="headerbar-text">
-                    {{ isSmallScreen ? "<" : "Products" }}
+                <div v-if="!isSmallScreen" class="headerbar-text">
+                    {{ "Products" }}
                 </div>
-            </button>
+            </CustomButton>
             <div class="headerbar-center">
-                <div class="headerbar-title">
-                    {{ currentRoute }}
+                <div :class="['headerbar-title']">
+                    {{ currentRouteTitle }}
                 </div>
             </div>
-            <button class="headerbar-btn-right" @click="navigateToCart">
-                <div class="headerbar-text">
-                    {{ isSmallScreen ? "" : "Cart" }}
+            <CustomButton
+                :color="'gray'"
+                :class="'headerbar-btn'"
+                @click="goToCart"
+            >
+                <div v-if="!isSmallScreen" class="headerbar-text">
+                    {{ "Cart" }}
                 </div>
                 <object v-html="cartIcon" v-once />
-            </button>
+            </CustomButton>
         </div>
     </div>
 </template>
@@ -32,19 +40,31 @@ import categoryIcon from "@/assets/category.svg?raw";
 import { computed } from "vue";
 import { useRouterNavigation } from "@/composables/useRouterNavigation";
 import { useBreakpoints } from "@vueuse/core";
+import CustomButton from "./CustomButton.vue";
 
 // Router navigation
 const { navigateToCart, navigateToProducts, router } = useRouterNavigation();
 
 // Get the current route name to title
-const currentRoute = computed(() => {
-    console.log(router.currentRoute.value.name);
-    return router.currentRoute.value.name;
+const currentRouteTitle = computed(() => {
+    return router.currentRoute.value.meta.title;
 });
+
+const goToProducts = async () => {
+    await navigateToProducts();
+};
+
+const goToCart = async () => {
+    await navigateToCart();
+};
 
 // Breakpoints
 const breakpoints = useBreakpoints({
-    sm: 640, // Tailwind's sm breakpoint
+    sm: 640, // Small screens
+    md: 768, // Medium screens
+    lg: 1024, // Large screens
+    xl: 1280, // Extra large screens
+    "2xl": 1536, // 2x extra large screens
 });
 
 // Check if the screen size is sm or smaller
@@ -52,23 +72,25 @@ const isSmallScreen = breakpoints.smaller("sm");
 
 // Define whether the left button should be shown
 const showLeftButton = computed(() => {
-    return currentRoute.value !== "Products";
+    if (isSmallScreen.value) {
+        return currentRouteTitle.value !== "Products";
+    }
+
+    return true;
 });
 </script>
 
 <style scoped>
 .headerbar {
-    @apply text-white w-full h-full p-2;
+    @apply text-white w-full h-full p-2 border-collapse border-b-2 border-gray-500;
 }
 
 .headerbar-content {
-    @apply h-full flex justify-end items-center p-4 gap-8;
-    @apply sm:justify-between;
+    @apply h-full flex items-center p-4 gap-8;
 }
 
-.headerbar-btn-left,
-.headerbar-btn-right {
-    @apply flex items-center justify-items-center gap-2 p-1 shadow-gray-900 rounded-lg shadow-lg h-12 min-w-12 border border-gray-500;
+.headerbar-btn {
+    @apply flex items-center justify-center gap-2 p-1 shadow-gray-900 rounded-lg shadow-md h-12 min-w-12;
 }
 
 .headerbar-center {
