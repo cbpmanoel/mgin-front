@@ -98,7 +98,7 @@ const navigateToCart = () => {
 
 <style scoped>
 .sidepanel {
-    @apply bg-gray-100 text-black w-full h-full min-w-52;
+    @apply bg-gray-100 text-black w-full h-full min-w-52 shadow-xl sm:shadow-none;
 }
 
 .sidepanel-layout {

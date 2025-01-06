@@ -18,7 +18,7 @@
             </div>
             <button class="headerbar-btn-right" @click="navigateToCart">
                 <div class="headerbar-text">
-                    {{ isSmallScreen ? ">" : "Cart" }}
+                    {{ isSmallScreen ? "" : "Cart" }}
                 </div>
                 <object v-html="cartIcon" v-once />
             </button>
@@ -68,7 +68,7 @@ const showLeftButton = computed(() => {
 
 .headerbar-btn-left,
 .headerbar-btn-right {
-    @apply flex items-center justify-around gap-2 p-1 shadow-gray-900 rounded-md shadow-lg;
+    @apply flex items-center justify-items-center gap-2 p-1 shadow-gray-900 rounded-lg shadow-lg h-12 min-w-12 border border-gray-500;
 }
 
 .headerbar-center {

@@ -20,7 +20,7 @@
 
         <!-- Toggle Button for Sidebar (Visible only on xs screens) -->
         <button @click="toggleSidebar" class="sidebar-button">
-            {{ isSidebarVisible ? "Hide" : "Show" }} Menu
+            {{ isSidebarVisible ? "< Hide" : "> Show" }} Menu
         </button>
 
         <!-- Side panel: Categories and Checkout area -->
@@ -292,7 +292,7 @@ const scrollTo = (category) => {
 }
 
 .sidebar-button {
-    @apply fixed z-50 p-2 text-white bg-gray-800 rounded-lg shadow-lg top-2 left-4 border border-gray-500 h-12;
+    @apply fixed z-50 p-2 text-white bg-gray-800 rounded-lg shadow-lg top-2 left-4 border border-gray-500 h-12 w-32 shadow-gray-900;
     @apply sm:hidden;
 }
 </style>
