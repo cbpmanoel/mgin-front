@@ -234,17 +234,21 @@ watch(
 // Update the item's quantity
 function onQuantitySelectorConfirm(payload) {
     updateProductQty(toRaw(selectedItem.value), payload.quantity);
+    selectedItem.value.quantity = payload.quantity;
+
     showSelectItemQtyModal.value = false;
 }
 
 // Add item to cart
 function onAddToCartClicked(payload) {
+    console.log("Add to cart clicked", payload);
+
     selectedItem.value = {
         id: payload.id,
         categoryId: payload.categoryId,
         price: payload.price,
         name: payload.name,
-        imageSrc: payload.imageSrc || "https://placehold.co/400x400/red/white",
+        imageSrc: payload.imageSrc,
         quantity: payload.quantity,
     };
     showSelectItemQtyModal.value = true;
