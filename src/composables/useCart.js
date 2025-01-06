@@ -1,9 +1,40 @@
 import { ref, computed } from "vue";
 
+// Key for localStorage
+const CART_STORAGE_KEY = "cart_v1";
+
+// Save cart to localStorage, debounced to prevent excessive writes. Debounce time is 500ms.
+let saveTimeout;
+function saveCartToLocalStorage() {
+    if (saveTimeout) clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        try {
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart.value));
+        } catch (error) {
+            console.error("Failed to save cart to localStorage:", error);
+        }
+    }, 500);
+}
+
+// Load cart from localStorage
+function loadCartFromLocalStorage() {
+    try {
+        const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+        if (storedCart) {
+            cart.value = JSON.parse(storedCart);
+        }
+    } catch (error) {
+        console.error("Failed to load cart from localStorage:", error);
+    }
+}
+
 // Cart state
 const cart = ref({});
 
 export const useCart = () => {
+    // Initialize the cart from localStorage
+    loadCartFromLocalStorage();
+
     // Validate a product object
     function validateProduct(product) {
         if (!product.id) {
@@ -61,7 +92,8 @@ export const useCart = () => {
 
         const existingProduct = findProduct(product);
         if (existingProduct) {
-            updateProductQty(product, existingProduct.quantity + amount);
+            const newQuantity = existingProduct.quantity + amount;
+            updateProductQty(product, newQuantity);
         }
     };
 
@@ -73,7 +105,8 @@ export const useCart = () => {
 
         const existingProduct = findProduct(product);
         if (existingProduct) {
-            updateProductQty(product, existingProduct.quantity - amount);
+            const newQuantity = existingProduct.quantity - amount;
+            updateProductQty(product, newQuantity);
         }
     };
 
@@ -97,11 +130,17 @@ export const useCart = () => {
                 quantity,
             };
         }
+
+        // Save the updated cart to localStorage
+        saveCartToLocalStorage();
     };
 
     // Clear the cart
     const clearCart = () => {
         cart.value = {};
+
+        // Save the cleared cart to localStorage
+        saveCartToLocalStorage();
     };
 
     // Compute the total value of the cart
