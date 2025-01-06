@@ -1,4 +1,4 @@
-// directives/clickOutside.js
+// Directive to detect clicks outside an element
 export const clickOutside = {
     beforeMount(el, binding) {
         // Define the click handler
