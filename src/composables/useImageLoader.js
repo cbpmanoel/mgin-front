@@ -1,11 +1,11 @@
 import { ref, onUnmounted } from "vue";
 import api from "../utils/api";
 
-export const useImageLoader = () => {
-    // State
-    const imageCache = ref({});
-    const error = ref(null);
+// State
+const imageCache = ref({});
+const error = ref(null);
 
+export const useImageLoader = () => {
     // Load an image from the server
     const loadImage = async (imageId, retries = 3, delay = 1000) => {
         // Handle missing imageId

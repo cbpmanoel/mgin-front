@@ -1,11 +1,12 @@
 import { ref } from "vue";
 import api from "../utils/api";
 
-export const useCategoryItems = () => {
-    const categoryItems = ref([]); // Cache for items by category ID
-    const isLoading = ref(false);
-    const error = ref(null);
+// State
+const categoryItems = ref([]);
+const isLoading = ref(false);
+const error = ref(null);
 
+export const useCategoryItems = () => {
     // Fetch menu items from the API by category ID
     const fetchCategoryItems = async (
         categoryId,

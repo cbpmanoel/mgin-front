@@ -1,8 +1,9 @@
 import { useRouter } from "vue-router";
 
-export const useRouterNavigation = () => {
-    const router = useRouter();
+const router = useRouter();
 
+export const useRouterNavigation = () => {
+    // Navigate to the cart page
     const navigateToCart = async () => {
         try {
             await router.push({ name: "cart" });
@@ -13,6 +14,7 @@ export const useRouterNavigation = () => {
         }
     };
 
+    // Navigate to the products page
     const navigateToProducts = async () => {
         try {
             await router.push({ name: "home" });
@@ -23,6 +25,7 @@ export const useRouterNavigation = () => {
         }
     };
 
+    // Navigate to the checkout page
     const navigateToCheckout = async () => {
         try {
             await router.replace({ name: "checkout" });
@@ -33,6 +36,7 @@ export const useRouterNavigation = () => {
         }
     };
 
+    // Go back to the previous page
     const goBack = () => {
         router.back();
     };

@@ -1,11 +1,12 @@
 import { ref } from "vue";
 import api from "../utils/api";
 
+// State
+const categories = ref([]);
+const isLoading = ref(false);
+const error = ref(null);
+
 export const useCategories = () => {
-    // State
-    const categories = ref([]);
-    const isLoading = ref(false);
-    const error = ref(null);
 
     // Fetch categories from the API
     const fetchCategories = async (retries = 3, delay = 1000) => {
