@@ -35,21 +35,19 @@ export const useCheckout = () => {
                 }
 
                 console.log("Checkout successful", response.data);
+
+                // Exit the loop if the data is valid
                 break;
             } catch (e) {
                 console.error(`Attempt ${attempt + 1} failed:`, e);
                 error.value = `Attempt ${attempt + 1}: ${e.message}`;
 
-                // Exit if there are no more retries
-                if (attempt === retries - 1) {
-                    break;
-                }
-
+                console.log("Retrying in 1 second...");
                 await new Promise((resolve) => setTimeout(resolve, delay));
-            } finally {
-                isLoading.value = false;
             }
         }
+
+        isLoading.value = false;
     };
 
     return { isLoading, error, checkout };

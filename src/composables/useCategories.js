@@ -35,77 +35,59 @@ export const useCategories = () => {
                 }
 
                 // Cache the response data
-                if (!validateJSON(response.data)) {
+                const validCategories = validateJSON(response.data);
+
+                // Validate the JSON response
+                if (validCategories === null) {
                     throw new Error("Invalid JSON response");
                 }
 
-                console.log("Categories fetched:", response.data.data.length);
+                console.log("Categories fetched:", validCategories.length);
+                categories.value = validCategories;
 
-                categories.value = response.data.data;
+                // Exit the loop if the data is valid
                 break;
             } catch (e) {
                 console.error(`Attempt ${attempt + 1} failed:`, e);
                 error.value = `Attempt ${attempt + 1}: ${e.message}`;
 
-                // Exit if there are no more retries
-                if (attempt === retries - 1) {
-                    break;
-                }
-
+                console.log("Retrying in 1 second...");
                 await new Promise((resolve) => setTimeout(resolve, delay));
-            } finally {
-                isLoading.value = false;
             }
         }
+
+        // Reset the loading state
+        isLoading.value = false;
     };
 
     function validateJSON(json) {
-        // Validate the root object
-        if (!json || typeof json !== "object" || !json.data) {
+        // Ensure the root object and `data` property exist and are an array
+        if (!json || typeof json !== "object" || !Array.isArray(json.data)) {
             console.error(
-                "Invalid JSON: Root object must contain a 'data' property.",
+                "Invalid JSON: Root object must contain a 'data' array.",
             );
-            return false;
+
+            // Return null if the JSON is invalid
+            return null;
         }
 
-        // Validate that 'data' is an array
-        if (!Array.isArray(json.data)) {
-            console.error("Invalid JSON: 'data' must be an array.");
-            return false;
-        }
+        // Filter valid categories
+        const validCategories = json.data.filter((category) => {
+            if (
+                category &&
+                typeof category === "object" &&
+                typeof category.id === "number" &&
+                typeof category.name === "string" &&
+                typeof category.image_id === "string"
+            ) {
+                return true;
+            } else {
+                console.error("Invalid category found:", category);
+                return false;
+            }
+        });
 
-        // Validate each category object in the 'data' array
-        for (const category of json.data) {
-            if (!category || typeof category !== "object") {
-                console.error(
-                    "Invalid JSON: Each item in 'data' must be an object.",
-                );
-                return false;
-            }
-
-            // Check for required properties
-            if (typeof category.id !== "number") {
-                console.error(
-                    `Invalid JSON: 'id' must be a number. Found: ${category.id}`,
-                );
-                return false;
-            }
-            if (typeof category.name !== "string") {
-                console.error(
-                    `Invalid JSON: 'name' must be a string. Found: ${category.name}`,
-                );
-                return false;
-            }
-            if (typeof category.image_id !== "string") {
-                console.error(
-                    `Invalid JSON: 'image_id' must be a string. Found: ${category.image_id}`,
-                );
-                return false;
-            }
-        }
-
-        // If all checks pass, the JSON is valid
-        return true;
+        return validCategories;
     }
 
     return { categories, isLoading, error, fetchCategories };
