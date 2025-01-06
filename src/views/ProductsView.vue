@@ -23,7 +23,6 @@
             {{ isSidebarVisible ? "< Hide" : "> Show" }} Menu
         </button>
 
-        <!-- Side panel: Categories and Checkout area -->
         <div class="flex w-full p-2 screen-height">
             <!-- Sidebar (Hidden on xs screens by default) -->
             <div

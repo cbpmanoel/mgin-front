@@ -86,8 +86,7 @@ const onUpdateCardData = (data) => {
 
     console.log("Payment data", paymentData.value);
 
-    isPaymentDataValid.value = data.valid || false;
-    console.log("Validation is", isPaymentDataValid.value);
+    isPaymentDataValid.value = data.valid === true;
 };
 
 // Payment function
