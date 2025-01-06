@@ -27,7 +27,7 @@
 
             <!-- Card payment -->
             <div v-if="paymentMethod === 'card'" class="mt-4">
-                <CardPaymentArea />
+                <CardPaymentArea @update-card-data="onUpdateCardData" />
             </div>
 
             <!-- PIX payment -->
@@ -41,7 +41,7 @@
                     color="green"
                     :class="'w-full p-2 font-semibold gap-2'"
                     :contentAlign="'center'"
-                    :disabled="totalCartValue <= 0"
+                    :disabled="totalCartValue <= 0 || !isPaymentDataValid"
                     @click="onPay"
                 >
                     <object v-html="LockIcon" v-once />
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import CardPaymentArea from "@/components/CardPaymentArea.vue";
 import CustomButton from "@/components/CustomButton.vue";
 import LockIcon from "@/assets/lock.svg?raw";
@@ -64,6 +64,15 @@ const { totalCartValue, cart, clearCart } = useCart();
 
 // Get the payment method from the dropdown
 const paymentMethod = ref("card");
+
+// Check if the payment data is valid
+const isPaymentDataValid = ref(false);
+
+// Update card data
+const onUpdateCardData = (data) => {
+    isPaymentDataValid.value = data.valid || false;
+    console.log("Validation is", isPaymentDataValid.value);
+};
 
 // Payment function
 const onPay = () => {
