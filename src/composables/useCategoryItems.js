@@ -45,17 +45,14 @@ export const useCategoryItems = () => {
                     );
                 }
 
-                console.log("Response data:", response.data);
-
                 if (!validateJSON(response.data)) {
                     throw new Error("Invalid JSON response");
                 }
 
                 // Cache the response data
-                categoryItems.value[categoryId] = response.data;
+                categoryItems.value[categoryId] = response.data.data;
                 console.log(
-                    `Cached items for category ${categoryId}:`,
-                    categoryItems.value[categoryId],
+                    `Cached ${categoryItems.value[categoryId].length} items for category ${categoryId}:`,
                 );
 
                 break;

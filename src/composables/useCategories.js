@@ -39,10 +39,9 @@ export const useCategories = () => {
                     throw new Error("Invalid JSON response");
                 }
 
-                console.log("Categories fetched successfully:", response.data);
+                console.log("Categories fetched:", response.data.data.length);
 
                 categories.value = response.data.data;
-                console.log("Cached categories:", categories.value);
                 break;
             } catch (e) {
                 console.error(`Attempt ${attempt + 1} failed:`, e);
