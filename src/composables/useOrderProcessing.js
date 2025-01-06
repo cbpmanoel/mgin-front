@@ -1,11 +1,11 @@
 import { ref } from "vue";
 import api from "../utils/api";
 
-export const useCheckout = () => {
+export const useOrderProcessing = () => {
     const isLoading = ref(false);
     const error = ref(null);
 
-    const checkout = async (
+    const processOrder = async (
         orderObject,
         retries = 3,
         delay = 1000,
@@ -18,8 +18,6 @@ export const useCheckout = () => {
         // Reset the state
         isLoading.value = true;
         error.value = null;
-
-
 
         for (let attempt = 0; attempt < retries; attempt++) {
             try {
@@ -50,5 +48,5 @@ export const useCheckout = () => {
         isLoading.value = false;
     };
 
-    return { isLoading, error, checkout };
+    return { isLoading, error, processOrder };
 };
