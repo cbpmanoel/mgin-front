@@ -1,8 +1,8 @@
 import { useRouter } from "vue-router";
 
-const router = useRouter();
-
 export const useRouterNavigation = () => {
+    const router = useRouter();
+
     // Navigate to the cart page
     const navigateToCart = async () => {
         try {
