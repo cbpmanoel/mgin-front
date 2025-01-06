@@ -11,7 +11,6 @@ export const useOrderBuilder = () => {
                 price: item.price,
             },
             quantity: item.quantity,
-            price_at_order: item.price, // Assuming price_at_order is the same as the item's price
         }));
 
         // Map payment to PaymentCardModel structure
