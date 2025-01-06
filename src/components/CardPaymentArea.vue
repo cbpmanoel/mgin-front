@@ -58,7 +58,7 @@
                 @input="validateCVV"
                 class="input"
                 placeholder="CVV"
-                maxlength="4"
+                maxlength="3"
             />
             <span v-if="cvvError" class="text-sm text-red-500"
                 >Invalid CVV</span
@@ -122,7 +122,7 @@ const validateCVV = () => {
     cvv.value = cvv.value.replace(/\D/g, "");
 
     // Validate CVV length (3 or 4 digits)
-    cvvError.value = cvv.value.length < 3 || cvv.value.length > 4;
+    cvvError.value = cvv.value.length !== 3;
 };
 
 // Watch for changes in expiration month and year
@@ -143,33 +143,47 @@ watch([expirationMonth, expirationYear], () => {
 // Form validation state
 const isFormValid = ref(false);
 
-// Watch for changes in all fields and emit data when valid, or errors when invalid
-watch(
-    [cardNumber, cardHolderName, expirationMonth, expirationYear, cvv],
-    () => {
-        isFormValid.value =
+// Validate form data
+const validateForm = () => {
+    try {
+        return (
             !cardNumberError.value &&
             !cardHolderNameError.value &&
             !cvvError.value &&
             !expirationDateError.value &&
-            cardNumber.value &&
-            cardHolderName.value &&
-            expirationMonth.value &&
-            expirationYear.value &&
-            cvv.value
-                ? true
-                : false;
+            cardNumber.value.trim() !== "" &&
+            cardHolderName.value.trim() !== "" &&
+            expirationMonth.value.trim() !== "" &&
+            expirationYear.value.trim() !== "" &&
+            cvv.value.trim() !== ""
+        );
+    }
+    // String input fields may throw an error if they are not strings
+    catch (error) {
+        console.error(error);
+        return false;
+    }
+};
 
-        emit("update-card-data", {
-            cardNumber: cardNumber.value.replace(/\s/g, ""), // Remove spaces
-            cardHolderName: cardHolderName.value,
-            expirationMonth: expirationMonth.value,
-            expirationYear: expirationYear.value,
-            cvv: cvv.value,
-            valid: isFormValid.value,
-        });
-    },
-    { deep: true },
+// Emit form data to parent component
+const emitFormData = () => {
+    emit("update-card-data", {
+        cardNumber: cardNumber.value.replace(/\s/g, ""), // Remove spaces
+        cardHolderName: cardHolderName.value,
+        expirationMonth: expirationMonth.value,
+        expirationYear: expirationYear.value,
+        cvv: cvv.value,
+        valid: isFormValid.value,
+    });
+};
+
+// Watch for changes in form data
+watch(
+    [cardNumber, cardHolderName, expirationMonth, expirationYear, cvv],
+    () => {
+        isFormValid.value = validateForm();
+        emitFormData();
+    }
 );
 </script>
 
