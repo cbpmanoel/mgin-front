@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch } from "vue";
 
 const emit = defineEmits(["update-card-data", "update-card-errors"]);
 
@@ -122,7 +122,7 @@ const validateCVV = () => {
     cvv.value = cvv.value.replace(/\D/g, "");
 
     // Validate CVV length (3 or 4 digits)
-    cvvError.value = !/^\d{3,4}$/.test(cvv.value);
+    cvvError.value = cvv.value.length < 3 || cvv.value.length > 4;
 };
 
 // Watch for changes in expiration month and year
@@ -140,41 +140,34 @@ watch([expirationMonth, expirationYear], () => {
     }
 });
 
-// Check if all fields are valid
-const isFormValid = computed(() => {
-    return (
-        !cardNumberError.value &&
-        !cardHolderNameError.value &&
-        !cvvError.value &&
-        !expirationDateError.value &&
-        cardNumber.value &&
-        cardHolderName.value &&
-        expirationMonth.value &&
-        expirationYear.value &&
-        cvv.value
-    );
-});
+// Form validation state
+const isFormValid = ref(false);
 
 // Watch for changes in all fields and emit data when valid, or errors when invalid
 watch(
     [cardNumber, cardHolderName, expirationMonth, expirationYear, cvv],
     () => {
-        if (isFormValid.value) {
-            emit("update-card-data", {
-                cardNumber: cardNumber.value.replace(/\s/g, ""), // Remove spaces
-                cardHolderName: cardHolderName.value,
-                expirationMonth: expirationMonth.value,
-                expirationYear: expirationYear.value,
-                cvv: cvv.value,
-            });
-        } else {
-            emit("update-card-errors", {
-                cardNumber: cardNumberError.value,
-                cardHolderName: cardHolderNameError.value,
-                expirationDate: expirationDateError.value,
-                cvv: cvvError.value,
-            });
-        }
+        isFormValid.value =
+            !cardNumberError.value &&
+            !cardHolderNameError.value &&
+            !cvvError.value &&
+            !expirationDateError.value &&
+            cardNumber.value &&
+            cardHolderName.value &&
+            expirationMonth.value &&
+            expirationYear.value &&
+            cvv.value
+                ? true
+                : false;
+
+        emit("update-card-data", {
+            cardNumber: cardNumber.value.replace(/\s/g, ""), // Remove spaces
+            cardHolderName: cardHolderName.value,
+            expirationMonth: expirationMonth.value,
+            expirationYear: expirationYear.value,
+            cvv: cvv.value,
+            valid: isFormValid.value,
+        });
     },
     { deep: true },
 );
