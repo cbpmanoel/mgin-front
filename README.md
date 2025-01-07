@@ -1,6 +1,6 @@
 # MGin Kiosk Frontend
 
-The **MGin Kiosk Frontend** is a Vue 3 application designed to provide a user-friendly interface for a food kiosk system. It connects to the **MGin Kiosk API** to fetch menu items, categories, and images, allowing users to browse products, manage their cart, and complete orders. Built with modern web technologies like **Vue 3**, **Tailwind CSS**, and **Vite**, the app ensures a fast, responsive, and visually appealing experience.
+The **MGin Kiosk Frontend** is a Vue 3 app for a food kiosk system. It connects to the **MGin Kiosk API** to display menu items, categories, and images, letting users browse, manage their cart, and place orders. Built with Vue 3, Tailwind CSS, and Vite, it offers a fast and responsive experience.
 
 ## Table of Contents
 
@@ -130,12 +130,6 @@ The project requires the following dependencies:
 - **Docker 24.0+**
 - **Docker Compose 1.29+**
 
-Install dependencies:
-
-```sh
-npm install
-```
-
 ---
 
 ## Installation
@@ -235,9 +229,3 @@ Contributions are welcome! Follow these steps:
 1. Fork the repository.
 2. Create a new branch for your feature or bugfix.
 3. Submit a pull request with a detailed description of your changes.
-
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
