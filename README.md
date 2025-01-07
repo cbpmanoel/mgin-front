@@ -17,8 +17,10 @@ The **MGin Kiosk Frontend** is a Vue 3 app for a food kiosk system. It connects 
 - [Installation](#installation)
 - [Usage](#usage)
 - [Views and Components](#views-and-components)
+    - [Reusable Components](#reusable-components)
 - [State Management](#state-management)
 - [Environment Variables](#environment-variables)
+- [Examples](#examples)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -44,8 +46,9 @@ The **MGin Kiosk Frontend** is a Vue 3 app for a food kiosk system. It connects 
 
 ### **API Integration**
 
-- **Fetching Data**: Connects to the **MGin Kiosk API** using **Axios** to retrieve categories, menu items, and images.
-- **Order Submission**: Sends structured order data to the API for processing.
+- **Data Fetching**: Retrieves categories, menu items, and images from the **MGin Kiosk API** using **Axios**.
+- **Order Management**: Sends structured order data to the backend API for processing.
+- **Error Handling**: Includes mechanisms to handle API errors, ensuring a smoother user experience.
 
 ---
 
@@ -130,6 +133,8 @@ The project requires the following dependencies:
 - **Docker 24.0+**
 - **Docker Compose 1.29+**
 
+**The current version was developed and tested under Ubuntu 20.04 Desktop and Ubuntu 22.04 for WSL2**
+
 ---
 
 ## Installation
@@ -191,9 +196,17 @@ Shows the current cart with a list of items, quantity selectors, and a summary o
 
 Provides a payment form for completing orders, including options for credit card payments.
 
+### **Reusable Components**
+
+- **ItemCard.vue**: Displays individual menu items with name, image, and price.
+- **SidePanel.vue**: Implements collapsible navigation for categories and the cart.
+- **ModalWindow.vue**: Provides a reusable modal component for actions like confirming orders or showing alerts.
+
 ---
 
 ## State Management
+
+The app uses **Vue 3 Composables** to modularize and reuse state management logic. Each composable focuses on a specific concern (e.g., cart, categories, images), simplifying both development and testing.
 
 ### **useCart Composable**
 
@@ -218,9 +231,28 @@ Handles the loading and caching of images from the API, ensuring efficient image
 The following environment variable is required to configure the application. Create a `.env` file in the root directory and populate it with the example below:
 
 ```env
-# API Base URL
+# Development Environment
 VITE_API_BASE_URL=http://localhost:8000
+
+# Production Environment
+VITE_API_BASE_URL=https://api.example.com
 ```
+
+---
+
+## Examples
+
+Here are two examples of the MGin Kiosk Frontend in action:
+
+### **Large Screen Example**
+
+![Large Screen Example](./example-lg.gif)
+
+### **Small Screen Example**
+
+![Small Screen Example](./example-sm.gif)
+
+---
 
 ## Contributing
 
