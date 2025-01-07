@@ -22,6 +22,9 @@
                 </div>
 
                 <!-- Cart items -->
+                <div v-if="totalItems === 0" class="p-4 text-center">
+                    <p class="text-lg font-semibold">Your cart is empty</p>
+                </div>
                 <div
                     v-for="item in cart"
                     :key="item.id"

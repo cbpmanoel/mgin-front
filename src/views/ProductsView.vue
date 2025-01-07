@@ -50,6 +50,11 @@
                 class="w-full mx-4 overflow-y-auto bg-gray-100 shadow-xl"
                 :class="['sm:ml-[21rem] sm:w-[calc(100%-20rem)]']"
             >
+                <div v-if="productList.length === 0" class="p-4 text-center">
+                    <p class="text-lg font-semibold">
+                        No products found. Please check back later.
+                    </p>
+                </div>
                 <div
                     v-for="category in productList"
                     :key="category.category"
