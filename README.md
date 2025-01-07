@@ -74,8 +74,8 @@ The application is organized into the following key directories and files:
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/cbpmanoel/mgin-kiosk-front.git
-    cd mgin-kiosk-front
+    git clone https://github.com/cbpmanoel/mgin-front.git
+    cd mgin-front
     ```
 
 2. Install dependencies:
@@ -99,8 +99,8 @@ The application is organized into the following key directories and files:
 2. **Clone the repository** (if not already done):
 
     ```sh
-    git clone https://github.com/cbpmanoel/mgin-kiosk-front.git
-    cd mgin-kiosk-front
+    git clone https://github.com/cbpmanoel/mgin-front.git
+    cd mgin-front
     ```
 
 3. **Build and Run the Docker Container**:
@@ -143,8 +143,8 @@ npm install
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/cbpmanoel/mgin-kiosk-front.git
-    cd mgin-kiosk-front
+    git clone https://github.com/cbpmanoel/mgin-front.git
+    cd mgin-front
     ```
 
 2. Install dependencies:
@@ -225,7 +225,7 @@ The following environment variable is required to configure the application. Cre
 
 ```env
 # API Base URL
-VITE_API_BASE_URL=http://api:8000
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
 ## Contributing
