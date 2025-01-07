@@ -246,11 +246,11 @@ Here are two examples of the MGin Kiosk Frontend in action:
 
 ### **Large Screen Example**
 
-![Large Screen Example](./example-lg.gif)
+![Large Screen Example](./gifs/screen-sample-lg.gif)
 
 ### **Small Screen Example**
 
-![Small Screen Example](./example-sm.gif)
+![Small Screen Example](./gifs/screen-sample-sm.gif)
 
 ---
 
