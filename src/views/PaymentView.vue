@@ -69,8 +69,12 @@ import { useOrderBuilder } from "@/composables/useOrderBuilder";
 const { totalCartValue, clearCart, getProductsOnCart } = useCart();
 
 // Checkout composable
-const { processOrder, error: checkoutError, isLoading: isProcessingOrder } =
-    useOrderProcessing();
+const {
+    processOrder,
+    error: checkoutError,
+    isLoading: isProcessingOrder,
+    orderId,
+} = useOrderProcessing();
 
 // Router navigation composable
 const { navigateToProducts } = useRouterNavigation();
@@ -83,10 +87,19 @@ const isPaymentDataValid = ref(false);
 const paymentData = ref({});
 
 // Disable payment button if the cart is empty, the payment data is invalid, or the order is being processed
-const disablePaymentButton = computed(() => totalCartValue.value <= 0 || !isPaymentDataValid.value || isProcessingOrder.value);
+const disablePaymentButton = computed(
+    () =>
+        totalCartValue.value <= 0 ||
+        !isPaymentDataValid.value ||
+        isProcessingOrder.value,
+);
 
 // PaymentButton text
-const paymentButtonText = computed(() => isProcessingOrder.value ? "Processing..." : `Pay - $${totalCartValue.value.toFixed(2)}`);
+const paymentButtonText = computed(() =>
+    isProcessingOrder.value
+        ? "Processing..."
+        : `Pay - $${totalCartValue.value.toFixed(2)}`,
+);
 
 // Order Builder
 const { buildOrder } = useOrderBuilder();
@@ -120,7 +133,13 @@ const onPay = async () => {
 
             // Clear the cart and navigate to the products page if the payment was successful
             if (!checkoutError.value) {
-                alert("Payment successful!");
+                alert(`
+Payment successful!
+
+Thank you for your purchase. You will be redirected to the products page.
+
+Order ID: ${orderId.value}
+`);
                 clearCart();
                 await navigateToProducts();
             } else {

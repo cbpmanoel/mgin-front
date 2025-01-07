@@ -4,12 +4,9 @@ import api from "../utils/api";
 export const useOrderProcessing = () => {
     const isLoading = ref(false);
     const error = ref(null);
+    const orderId = ref(null);
 
-    const processOrder = async (
-        orderObject,
-        retries = 3,
-        delay = 1000,
-    ) => {
+    const processOrder = async (orderObject, retries = 3, delay = 1000) => {
         // Prevent multiple requests
         if (isLoading.value) {
             return;
@@ -18,10 +15,12 @@ export const useOrderProcessing = () => {
         // Reset the state
         isLoading.value = true;
         error.value = null;
+        orderId.value = null;
 
         for (let attempt = 0; attempt < retries; attempt++) {
             try {
-                const response = await api.post('/order', orderObject);
+                // Send the order to the API
+                const response = await api.post("/order", orderObject);
 
                 // Validate the response status
                 if (response.status !== 200) {
@@ -30,7 +29,10 @@ export const useOrderProcessing = () => {
                     );
                 }
 
-                console.log("Order processed successfully:");
+                console.log(`Order ID: ${response.data.order_id}`);
+
+                // Cache the order ID
+                orderId.value = response.data.order_id;
 
                 // Exit the loop if the data is valid
                 break;
@@ -46,5 +48,5 @@ export const useOrderProcessing = () => {
         isLoading.value = false;
     };
 
-    return { isLoading, error, processOrder };
+    return { isLoading, error, orderId, processOrder };
 };
